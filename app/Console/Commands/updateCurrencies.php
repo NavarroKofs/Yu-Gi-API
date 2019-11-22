@@ -39,13 +39,18 @@ class updateCurrencies extends Command
      */
     public function handle()
     {
-        $ruta_divisas = "https://frankfurter.app/latest?amount=1&from=USD&to=MXN";
-        $convertCurrency = file_get_contents($ruta_divisas);
-        $value = json_decode($convertCurrency, true);
-        //$currency = Currency::create(["moneda" => 'MXN', "valor" =>'20.00']);
-        $update = Currency::findOrFail(1);
-        $update->valor = $value['rates']['MXN'];
-        $update->moneda = 'MXN';
-        $update->save();
+        $currency = Currency::where('id', '=', '1');
+        if ($currency === null) {
+            $currency = Currency::create(["moneda" => 'MXN', "valor" =>'20.00']);
+        } else {
+            $ruta_divisas = "https://frankfurter.app/latest?amount=1&from=USD&to=MXN";
+            $convertCurrency = file_get_contents($ruta_divisas);
+            $value = json_decode($convertCurrency, true);
+            $update = Currency::findOrFail(1);
+            $update->valor = $value['rates']['MXN'];
+            $update->moneda = 'MXN';
+            $update->save();
+            echo("Actualizada");
+        }
     }
 }
