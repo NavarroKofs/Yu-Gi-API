@@ -17,4 +17,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::get('v1/cartas/{nombre_carta}', 'cartasController@busqueda');
+
+Route::get('v1/cartas/', 'cartasController@show_all_cards');
 Route::post('decklist',"CustomizedDecklistController@store");
