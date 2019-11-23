@@ -19,7 +19,7 @@ class cartasController extends Controller
         }
         if($instruccion == "fname"){
             $ruta_base_de_cartas = "https://db.ygoprodeck.com/api/v5/cardinfo.php?&fname=$nombreCarta";
-            return self::crear_JSON($ruta_base_de_cartas);
+            return self::paginacion($ruta_base_de_cartas);
         }
     }
 
@@ -47,6 +47,10 @@ class cartasController extends Controller
 
     public function show_all_cards(){
         $ruta_base_de_cartas = "https://db.ygoprodeck.com/api/v5/cardinfo.php";
+        return self::paginacion($ruta_base_de_cartas);
+    }
+
+    public function paginacion($ruta_base_de_cartas){
         // Set default page
         $page = request()->has('page') ? request('page') : 1;
         // Set default per page
