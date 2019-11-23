@@ -69,4 +69,24 @@ class cartasController extends Controller
         );
         return $results;
     }
+
+    public function show_all_cards_of_a_set($set){
+        $name_set = str_replace (" ", "%20", $set);
+        $ruta_base_de_cartas = "https://db.ygoprodeck.com/api/v5/cardinfo.php?set=$name_set";
+        return self::paginacion($ruta_base_de_cartas);
+    }
+
+    public function show_banlist($ruling){
+        $ruling_type = strtolower($ruling);
+        if(($ruling_type == 'ocg') or ($ruling_type == 'tcg') or ($ruling_type == 'goat')){
+            $ruta_base_de_cartas = "https://db.ygoprodeck.com/api/v5/cardinfo.php?banlist=$ruling_type";
+            return self::paginacion($ruta_base_de_cartas);
+        }
+    }
+
+    public function show_all_cards_of_archetype($archetype){
+        $archetype_name = str_replace (" ", "%20", $archetype);
+        $ruta_base_de_cartas = "https://db.ygoprodeck.com/api/v5/cardinfo.php?archetype=$archetype_name";
+        return self::paginacion($ruta_base_de_cartas);
+    }
 }
