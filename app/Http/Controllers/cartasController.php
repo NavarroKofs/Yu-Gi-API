@@ -14,18 +14,18 @@ class cartasController extends Controller
         if($cartas == $divisor[0]){
             return response()->json([
                 "errors"=> ["code"=> "ERROR-1",
-                "title"=>  "Bad file request",
+                "title"=>  "Unprocessable Entity",
                 "description"=> 'expected "name" or "fname" as argument'
-                ]]  , 400);
+                ]]  , 422);
         }
         $instruccion = $divisor[0];
         $nombreCarta = str_replace (" ", "%20", $divisor[1]);
         if ($nombreCarta == ""){
             return response()->json([
                 "errors"=> ["code"=> "ERROR-1",
-                "title"=>  "Bad file request",
+                "title"=>  "Unprocessable Entity",
                 "description"=> 'you must enter the name of the card'
-                ]]  , 400);
+                ]]  , 422);
         }
         if ($instruccion == "name"){
             $ruta_base_de_cartas = "https://db.ygoprodeck.com/api/v5/cardinfo.php?name=$nombreCarta";
@@ -37,9 +37,9 @@ class cartasController extends Controller
         }
         return response()->json([
             "errors"=> ["code"=> "ERROR-1",
-            "title"=>  "Bad file request",
+            "title"=>  "Unprocessable Entity",
             "description"=> 'expected "name" or "fname" as argument'
-            ]]  , 400); 
+            ]]  , 422); 
     }
 
     public function crear_JSON($ruta_base_de_cartas){
@@ -103,9 +103,9 @@ class cartasController extends Controller
         if ($name_set == ""){
             return response()->json([
                 "errors"=> ["code"=> "ERROR-1",
-                "title"=>  "Bad file request",
+                "title"=>  "Unprocessable Entity",
                 "description"=> 'you must enter the name of the card'
-                ]]  , 400);
+                ]]  , 422);
         }
         $ruta_base_de_cartas = "https://db.ygoprodeck.com/api/v5/cardinfo.php?set=$name_set";
         $headers = get_headers($ruta_base_de_cartas);
@@ -128,9 +128,9 @@ class cartasController extends Controller
         }
         return response()->json([
             "errors"=> ["code"=> "ERROR-1",
-            "title"=>  "Bad file request",
+            "title"=>  "Unprocessable Entity",
             "description"=> 'you must enter the banlist "ocg", "tcg" or "goat"'
-            ]]  , 400);
+            ]]  , 422);
     }
 
     public function show_all_cards_of_archetype($archetype){
@@ -138,9 +138,9 @@ class cartasController extends Controller
         if ($archetype_name == ""){
             return response()->json([
                 "errors"=> ["code"=> "ERROR-1",
-                "title"=>  "Bad file request",
+                "title"=>  "Unprocessable Entity",
                 "description"=> 'you must enter the name of the card'
-                ]]  , 400);
+                ]]  , 422);
         }
         $ruta_base_de_cartas = "https://db.ygoprodeck.com/api/v5/cardinfo.php?archetype=$archetype_name";
         $headers = get_headers($ruta_base_de_cartas);
