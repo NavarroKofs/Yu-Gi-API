@@ -43,13 +43,190 @@ class CustomizedDecklistController extends Controller
         $cards = [];
       }
 
+
+      $answer = self::legality($cards);
+      $legality = $answer[0];
+      $cardTotal = $answer[1];
+      $illegalCards = $answer[2];
+
+      try {
+        $deck = customizedDecklist::create([
+                                            'name'=> $name,
+                                            'cards'=> $cards,
+                                            'legality'=> $legality,
+                                            "illegalCards"=> $illegalCards,
+                                            "size" => $cardTotal
+                                          ]);
+                $response = [
+                            "data"=> ["name"=> $name,
+                                      "cards"=> $cards,
+                                      "size" => $cardTotal,
+                                      "legality"=> $legality,
+                                      "illegalCards"=> $illegalCards
+                                      ]
+                            ];
+      } catch (\Exception $e) {
+        $response = [
+                    "error"=> ["code"=> "423",
+                               "description" => "Deck name already taken"
+                              ]
+                    ];
+        return response()->json($response,423);
+      }
+
+
+
+        return response()->json($response,200);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param   $name
+     * @return \Illuminate\Http\Response
+     */
+    public function addCard(Request $request, $name)
+    {
+      try {
+          $cards = $request->data["cards"];
+      } catch (\Exception $e) {
+        $cards = [];
+      }
+
+        $deckList = customizedDecklist::find($name);
+        $newCards = $deckList->cards;
+        for ($i=0; $i < count($cards) ; $i++) {
+        array_push($newCards, $request->data["cards"][$i]);
+      }
+
+      $answer = self::legality($newCards);
+
+      $deckList->cards = $newCards;
+      $deckList->legality = $answer[0];
+      $deckList->size = $answer[1];
+      $deckList->illegalCards = $answer[2];
+      $deckList->save();
+
+      $response = [
+                  "data"=> ["name"=> $name,
+                            "cards"=> $deckList->cards,
+                            "size" => $deckList->size,
+                            "legality"=> $deckList->legality,
+                            "illegalCards"=> $deckList->illegalCards
+                            ]
+                  ];
+
+
+      return response()->json($response,200);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param   $name
+     * @return \Illuminate\Http\Response
+     */
+    public function removeCard(Request $request, $name)
+    {
+        $deckList = customizedDecklist::find($name);
+        $cards = $deckList->cards;
+        for ($i=0; $i < count($cards) ; $i++) {
+          if($cards[$i]['name']==$request->data["card"]){
+            unset($cards[$i]);
+          }
+        }
+        var_dump($cards);
+        $answer = self::legality($cards);
+
+        $deckList->cards = $cards;
+        $deckList->legality = $answer[0];
+        $deckList->size = $answer[1];
+        $deckList->illegalCards = $answer[2];
+        $deckList->save();
+
+      $response = [
+                  "data"=> ["name"=> $name,
+                            "cards"=> $deckList->cards,
+                            "size" => $deckList->size,
+                            "legality"=> $deckList->legality,
+                            "illegalCards"=> $deckList->illegalCards
+                            ]
+                  ];
+
+
+      return response()->json($response,200);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\customizedDecklist  $customizedDecklist
+     * @return \Illuminate\Http\Response
+     */
+    public function viewDecklist($name)
+    {
+        $deckList = customizedDecklist::find($name);
+
+        $response = [
+                    "data"=> ["name"=> $name,
+                              "cards"=> $deckList->cards,
+                              "size" => $deckList->size,
+                              "legality"=> $deckList->legality,
+                              "illegalCards"=> $deckList->illegalCards
+                              ]
+                    ];
+
+        return response()->json($response,200);
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\customizedDecklist  $customizedDecklist
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(customizedDecklist $customizedDecklist)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\customizedDecklist  $customizedDecklist
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, customizedDecklist $customizedDecklist)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\customizedDecklist  $customizedDecklist
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(customizedDecklist $customizedDecklist)
+    {
+        //
+    }
+
+    public function legality($cards){
       $illegalCards = array();
-      $cardTotal=0;
       $legality=true;
+      $cardTotal=0;
+      print("->".$cards[0]["amount"]);
+      print("->".count($cards));
+
 
       for ($i=0; $i < count($cards) ; $i++) {
         $legalAmount;
-        $cardTotal+=$cards[$i]["amount"];
+        print("->".$cards[$i]["amount"]);
+        $cardTotal+=$cards[0]["amount"];
         $cardName = str_replace(" ", "%20",$cards[$i]["name"]);
         $route = "https://db.ygoprodeck.com/api/v5/cardinfo.php?banlist=tcg&name=".$cardName;
 
@@ -86,68 +263,8 @@ class CustomizedDecklistController extends Controller
         $legality=false;
       }
 
+      $answer = [$legality, $cardTotal, $illegalCards];
 
-      $deck = customizedDecklist::create([
-                                          'name'=> $name,
-                                          'cards'=> $cards,
-                                          'legality'=> $legality,
-                                          "illegalCards"=> $illegalCards,
-                                          "size" => $cardTotal
-                                        ]);
-              $response = [
-                          "data"=> ["name"=> $name,
-                                    "cards"=> $cards,
-                                    "size" => $cardTotal,
-                                    "legality"=> $legality,
-                                    "illegalCards"=> $illegalCards
-                                    ]
-                          ];
-
-              return response()->json($response,201);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\customizedDecklist  $customizedDecklist
-     * @return \Illuminate\Http\Response
-     */
-    public function show(customizedDecklist $customizedDecklist)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\customizedDecklist  $customizedDecklist
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(customizedDecklist $customizedDecklist)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\customizedDecklist  $customizedDecklist
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, customizedDecklist $customizedDecklist)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\customizedDecklist  $customizedDecklist
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(customizedDecklist $customizedDecklist)
-    {
-        //
+        return $answer;
     }
 }

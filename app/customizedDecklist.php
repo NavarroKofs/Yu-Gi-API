@@ -11,6 +11,7 @@ class customizedDecklist extends Model
         'illegalCards' => 'array'
     ];
 
+
   protected $fillable = [
       'name',
       'cards',
@@ -18,4 +19,6 @@ class customizedDecklist extends Model
       'size',
       'illegalCards'
   ];
+
+    protected  $primaryKey = 'name';
 }
