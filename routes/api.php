@@ -21,6 +21,7 @@ Route::get('v1/cartas/{nombre_carta}', 'cartasController@busqueda');
 
 Route::get('v1/cartas/', 'cartasController@show_all_cards');
 Route::post('v1/decklist/',"CustomizedDecklistController@store");
+Route::delete('v1/decklist/',"CustomizedDecklistController@destroy");
 Route::put('v1/decklist/{name}',"CustomizedDecklistController@addCard");
 Route::delete('v1/decklist/{name}',"CustomizedDecklistController@removeCard");
 Route::get('v1/decklist/{name}',"CustomizedDecklistController@viewDecklist");
