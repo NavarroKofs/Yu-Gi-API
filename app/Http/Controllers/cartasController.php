@@ -29,11 +29,11 @@ class cartasController extends Controller
         }
         if ($instruccion == "name"){
             $ruta_base_de_cartas = "https://db.ygoprodeck.com/api/v5/cardinfo.php?name=$nombreCarta";
-            return self::crear_JSON($ruta_base_de_cartas);
+            return response()->json(self::crear_JSON($ruta_base_de_cartas), 200);
         }
         if($instruccion == "fname"){
             $ruta_base_de_cartas = "https://db.ygoprodeck.com/api/v5/cardinfo.php?&fname=$nombreCarta";
-            return self::paginacion($ruta_base_de_cartas);
+            return response()->json(self::paginacion($ruta_base_de_cartas), 200);
         }
         return response()->json([
             "errors"=> ["code"=> "ERROR-1",
@@ -43,7 +43,7 @@ class cartasController extends Controller
     }
 
     public function crear_JSON($ruta_base_de_cartas){
-        $dollar_in_peso = Currency::find(1)->valor; //Solo hay una conversión de dolar a pesos
+        $dollar_in_peso = 20; //Currency::find(1);
         $headers = get_headers($ruta_base_de_cartas);
         $status = substr($headers[0], 9, 3);
         if ($status != '200') {
