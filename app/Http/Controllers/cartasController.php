@@ -44,7 +44,7 @@ class cartasController extends Controller
     }
 
     public function crear_JSON($ruta_base_de_cartas){
-        $dollar_in_peso = $dollar_in_peso = DB::table('currencies')->whereId(1)->first()->valor;
+        $dollar_in_peso = DB::table('currencies')->whereId(1)->first()->valor;
         $headers = get_headers($ruta_base_de_cartas);
         $status = substr($headers[0], 9, 3);
         if ($status != '200') {
