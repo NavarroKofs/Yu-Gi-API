@@ -11,8 +11,22 @@ class cartasController extends Controller
 {
     public function busqueda($cartas){
         $divisor = explode("=", $cartas);
+        if($cartas == $divisor[0]){
+            return response()->json([
+                "errors"=> ["code"=> "ERROR-1",
+                "title"=>  "Bad file request",
+                "description"=> 'expected "name" or "fname" as argument'
+                ]]  , 400);
+        }
         $instruccion = $divisor[0];
         $nombreCarta = str_replace (" ", "%20", $divisor[1]);
+        if ($nombreCarta == ""){
+            return response()->json([
+                "errors"=> ["code"=> "ERROR-1",
+                "title"=>  "Bad file request",
+                "description"=> 'you must enter the name of the card'
+                ]]  , 400);
+        }
         if ($instruccion == "name"){
             $ruta_base_de_cartas = "https://db.ygoprodeck.com/api/v5/cardinfo.php?name=$nombreCarta";
             return self::crear_JSON($ruta_base_de_cartas);
@@ -21,10 +35,24 @@ class cartasController extends Controller
             $ruta_base_de_cartas = "https://db.ygoprodeck.com/api/v5/cardinfo.php?&fname=$nombreCarta";
             return self::paginacion($ruta_base_de_cartas);
         }
+        return response()->json([
+            "errors"=> ["code"=> "ERROR-1",
+            "title"=>  "Bad file request",
+            "description"=> 'expected "name" or "fname" as argument'
+            ]]  , 400); 
     }
 
     public function crear_JSON($ruta_base_de_cartas){
-        $dollar_in_peso = 20;
+        $dollar_in_peso = Currency::find(1)->valor; //Solo hay una conversión de dolar a pesos
+        $headers = get_headers($ruta_base_de_cartas);
+        $status = substr($headers[0], 9, 3);
+        if ($status != '200') {
+            return response()->json([
+                "errors"=> ["code"=> "ERROR-2",
+                "title"=>  "Not Found",
+                "description"=> 'No card matching your query was found in the database.'
+                ]]  , 404); 
+        }
         $cardJson = file_get_contents($ruta_base_de_cartas);
         $cardInfo = json_decode($cardJson, true);
         $num_cards = count($cardInfo);
@@ -72,7 +100,23 @@ class cartasController extends Controller
 
     public function show_all_cards_of_a_set($set){
         $name_set = str_replace (" ", "%20", $set);
+        if ($name_set == ""){
+            return response()->json([
+                "errors"=> ["code"=> "ERROR-1",
+                "title"=>  "Bad file request",
+                "description"=> 'you must enter the name of the card'
+                ]]  , 400);
+        }
         $ruta_base_de_cartas = "https://db.ygoprodeck.com/api/v5/cardinfo.php?set=$name_set";
+        $headers = get_headers($ruta_base_de_cartas);
+        $status = substr($headers[0], 9, 3);
+        if ($status != '200') {
+            return response()->json([
+                "errors"=> ["code"=> "ERROR-2",
+                "title"=>  "Not Found",
+                "description"=> 'No card matching your query was found in the database.'
+                ]]  , 404); 
+        }
         return self::paginacion($ruta_base_de_cartas);
     }
 
@@ -82,11 +126,32 @@ class cartasController extends Controller
             $ruta_base_de_cartas = "https://db.ygoprodeck.com/api/v5/cardinfo.php?banlist=$ruling_type";
             return self::paginacion($ruta_base_de_cartas);
         }
+        return response()->json([
+            "errors"=> ["code"=> "ERROR-1",
+            "title"=>  "Bad file request",
+            "description"=> 'you must enter the banlist "ocg", "tcg" or "goat"'
+            ]]  , 400);
     }
 
     public function show_all_cards_of_archetype($archetype){
         $archetype_name = str_replace (" ", "%20", $archetype);
+        if ($archetype_name == ""){
+            return response()->json([
+                "errors"=> ["code"=> "ERROR-1",
+                "title"=>  "Bad file request",
+                "description"=> 'you must enter the name of the card'
+                ]]  , 400);
+        }
         $ruta_base_de_cartas = "https://db.ygoprodeck.com/api/v5/cardinfo.php?archetype=$archetype_name";
+        $headers = get_headers($ruta_base_de_cartas);
+        $status = substr($headers[0], 9, 3);
+        if ($status != '200') {
+            return response()->json([
+                "errors"=> ["code"=> "ERROR-2",
+                "title"=>  "Not Found",
+                "description"=> 'No card matching your query was found in the database.'
+                ]]  , 404); 
+        }
         return self::paginacion($ruta_base_de_cartas);
     }
 }
