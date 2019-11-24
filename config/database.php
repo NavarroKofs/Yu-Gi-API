@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'mysql'),
+    'default' => env('DB_CONNECTION', 'pgsql'),
 
     /*
     |--------------------------------------------------------------------------
@@ -68,9 +68,9 @@ return [
             'url' => env('DATABASE_URL'),
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '5432'),
-            'database' => env('DB_DATABASE', 'forge'),
-            'username' => env('DB_USERNAME', 'forge'),
-            'password' => env('DB_PASSWORD', ''),
+            'database' => env('DB_DATABASE', 'dbh2hqhn9n4tk4'),
+            'username' => env('DB_USERNAME', 'camuhaewzxokbj'),
+            'password' => env('DB_PASSWORD', '577551f627c788fd294b724102069275e7e1eb9fd74ab1cdca816102a919540d'),
             'charset' => 'utf8',
             'prefix' => '',
             'prefix_indexes' => true,
