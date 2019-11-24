@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateDeckPersonalizadosTable extends Migration
+class CreateYUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,12 @@ class CreateDeckPersonalizadosTable extends Migration
      */
     public function up()
     {
-        Schema::create('deck_personalizados', function (Blueprint $table) {
+        Schema::create('y_users', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->timestamps();
+            $table->string('name');
+            $table->string('email');
+            $table->string('password');
         });
     }
 
@@ -26,6 +29,6 @@ class CreateDeckPersonalizadosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('deck_personalizados');
+        Schema::dropIfExists('y_users');
     }
 }
