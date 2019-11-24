@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Currency;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 
 class cartasController extends Controller
 {
@@ -43,7 +44,7 @@ class cartasController extends Controller
     }
 
     public function crear_JSON($ruta_base_de_cartas){
-        $dollar_in_peso = 20; //Currency::find(1);
+        $dollar_in_peso = $dollar_in_peso = DB::table('currencies')->whereId(1)->first()->valor;
         $headers = get_headers($ruta_base_de_cartas);
         $status = substr($headers[0], 9, 3);
         if ($status != '200') {
