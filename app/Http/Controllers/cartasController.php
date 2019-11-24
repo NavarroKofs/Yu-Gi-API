@@ -75,6 +75,16 @@ class cartasController extends Controller
 
     public function show_all_cards(){
         $ruta_base_de_cartas = "https://db.ygoprodeck.com/api/v5/cardinfo.php";
+        $headers = get_headers($ruta_base_de_cartas);
+        $status = substr($headers[0], 9, 3);
+        if ($status != '200') {
+            return response()->json([
+                "errors"=> ["code"=> "ERROR-3",
+                "title"=>  "Service Unavailable",
+                "description"=> 'The server is currently unable to handle the request due to a temporary 
+                overload or scheduled maintenance, which will likely be alleviated after some delay.'
+                ]]  , 503); 
+        }
         return self::paginacion($ruta_base_de_cartas);
     }
 
@@ -86,6 +96,15 @@ class cartasController extends Controller
         // Offset required to take the results
         $offset = ($page * $perPage) - $perPage;
         // At here you might transform your data into collection
+        $headers = get_headers($ruta_base_de_cartas);
+        $status = substr($headers[0], 9, 3);
+        if ($status != '200') {
+            return response()->json([
+                "errors"=> ["code"=> "ERROR-2",
+                "title"=>  "Not Found",
+                "description"=> 'No card matching your query was found in the database.'
+                ]]  , 404); 
+        }
         $newCollection = collect(self::crear_JSON($ruta_base_de_cartas));
         // Set custom pagination to result set
         $results =  new LengthAwarePaginator(
