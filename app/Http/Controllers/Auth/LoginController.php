@@ -15,10 +15,15 @@ class LoginController extends Controller
             'password' => 'required|string'
         ]);
     //return $credentials;
-    if( Auth::attempt($credentials)){
+    if(auth::attempt($credentials)){
         return response()->json($credentials, 201);
+    }else{
+
+    return response()->json([
+        "errors"=> ["code"=>"Error-1",
+        "title"=>"El usuario no se encuentra registrado"
+    ]], 422);
     }
-    return "Error";
   }
   public function logout(){
     $this->middleware('auth');
