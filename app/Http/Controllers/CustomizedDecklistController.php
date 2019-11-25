@@ -56,7 +56,7 @@ class CustomizedDecklistController extends Controller
                                       ]
                             ];
 
-        return response()->json($response,200);
+        return response()->json($response,201);
     }
 
     /**
@@ -206,7 +206,7 @@ class CustomizedDecklistController extends Controller
              ]]  , 404);
         } else {
             customizedDecklist::destroy($name);
-            return response()->json(204);
+            return response()->json($request,204);
       }
     }
 
