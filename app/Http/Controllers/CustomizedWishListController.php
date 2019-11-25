@@ -51,9 +51,24 @@ class customizedWishListController extends Controller
   */
   public function getWishList(Request $request, $name)
   {
-    $wishlist = DB::select;
+    $wishlistDB = DB::table('wish_lists')->where('name', '=', $name)->first();
+    $wishlistJson = json_encode($wishlistDB);
+    $response = cartasController::paginacion($wishlistJson);
 
+    return response()->json($response,201);
+  }
 
+  /**
+   * get the wishlist total price.
+   *
+   * @param  Request  $request
+   * @param  string $name
+   * @return Response
+  */
+  public function getTotalPrice(Request $request, $name){
+    $wishlistDB = DB::table('wish_lists')->select('price')->where('name', '=', $name)->first();
+    $wishlistJson = json_encode($wishlistDB);
 
+    return response()->json($wishlistJson,201);
   }
 }

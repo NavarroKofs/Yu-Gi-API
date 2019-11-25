@@ -19,3 +19,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::post('wishlist/{wishlist}',"CustomizedWishListController@newWishlist");
 Route::get('wishlist/{name}',"CustomizedWishListController@getWishList");
+Route::get('wishlist/tPrice/{name}','CustomizedWishListController@getTotalPrice');
