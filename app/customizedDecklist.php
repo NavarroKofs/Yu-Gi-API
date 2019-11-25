@@ -7,12 +7,18 @@ use Illuminate\Database\Eloquent\Model;
 class customizedDecklist extends Model
 {
   protected $casts = [
-        'cards' => 'array'
+        'cards' => 'array',
+        'illegalCards' => 'array'
     ];
+
 
   protected $fillable = [
       'name',
       'cards',
-      'legality'
+      'legality',
+      'size',
+      'illegalCards'
   ];
+
+    protected  $primaryKey = 'name';
 }

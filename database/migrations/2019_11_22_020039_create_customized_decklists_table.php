@@ -18,7 +18,9 @@ class CreateCustomizedDecklistsTable extends Migration
             $table->timestamps();
             $table->string('name');
             $table->json('cards');
-            $table->string('legality');
+            $table->json('illegalCards');
+            $table->boolean('legality');
+            $table->string('size');
         });
     }
 
