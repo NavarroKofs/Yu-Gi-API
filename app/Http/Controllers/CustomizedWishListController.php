@@ -18,7 +18,7 @@ class customizedWishListController extends Controller
   public function newWishlist(Request $request)
   {
     $name = $request->data['name'];
-    if (!customizedWishList::findOrFail($name)) {
+    if (customizedWishList::findOrFail($name)) {
       $response = [
                   "error"=> ["code"=> "423",
                              "description" => "Wish name already taken"
