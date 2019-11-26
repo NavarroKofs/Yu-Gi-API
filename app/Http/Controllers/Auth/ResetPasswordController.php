@@ -1,13 +1,13 @@
-    <?php
+<?php
 
-    namespace App\Http\Controllers\Auth;
-    use Auth;
-    use App\Http\Controllers\Controller;
-    use Illuminate\Foundation\Auth\ResetsPasswords;
-    use App\User;
-    use Illuminate\Http\Request;
-    use Illuminate\Support\Facades\DB;
-    use Carbon\Carbon;
+namespace App\Http\Controllers\Auth;
+use Auth;
+use App\Http\Controllers\Controller;
+use Illuminate\Foundation\Auth\ResetsPasswords;
+use App\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
     class ResetPasswordController extends Controller
     {
         /*
@@ -40,56 +40,55 @@
           
            $emailRequired = $email->email;
           
-          
+         
 
     //Buscar el email en la base de datos
            $validacionCorreo = DB::table('users')->where('email', '=', $emailRequired)->first();
            //validación de la existencia del correo
-    if($validacionCorreo){
-        
+        if($validacionCorreo){
         DB::table('password_resets')->insert([
         'email' => $email->email,
         'token' => str_random(60),
         'created_at' => Carbon::now()
     ]);
-        //Get the token just created above
+      
         $tokenData = DB::table('password_resets')
         ->where('email', $email->email)->first();
-          
+           //  return response()->json($tokenData,201);
 
 
     if ($this->sendResetEmail($email->email, $tokenData->token)) {
-
         return response()->json("Se ha enviado un correo para cambiar la contrasena a " . "$email->email",200);
-
     } else {
         return response()->json([
 
-            "errors"=> ["code"=>"Network Error",
-            "title"=>"Ha ocurrido un problema, por favor intenta de nuevo"]], 422);
+            "errors"=> ["code"=>"Unprocesable Entity",
+            "title"=>"Ha ocurrido un problema, por favor intenta de nuevo",
+            "description" => "El servidor ha fallado en el registro del token"
+
+        ]], 422);
     }
            }else{
-
             return response()->json([
-            "errors"=> ["code"=>"Error-1",
-            "title"=>"El usuario no se encuentra registrado"
+                
+            "errors"=> ["code"=>"Unprocesable Entity",
+            "title"=>"El usuario no se encuentra registrado",
+            "description"=> "No existe un usuario registrado con ese correo"
         ]], 422);
-
            }
-       
+          
+        
           
 
         }
-    private function sendResetEmail($email, $token){
-
-       //Obtener el usuario de la base de datos
+        private function sendResetEmail($email, $token){
+       
     $user = DB::table('users')->where('email', $email)->select('email')->first();
 
-    //Generar un link con el token incluido en el mismo
     $link = config('base_url') . 'password/reset/' . $token . '?email=' . urlencode($user->email);
 
         try {
-       
+        
             return true;
         } catch (\Exception $e) {
             return false;

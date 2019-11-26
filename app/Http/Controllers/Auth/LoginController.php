@@ -16,19 +16,35 @@ class LoginController extends Controller
         ]);
     //return $credentials;
     if(auth::attempt($credentials)){
-        return response()->json($credentials, 201);
+        return response()->json($credentials, 200);
     }else{
 
     return response()->json([
-        "errors"=> ["code"=>"Error-1",
-        "title"=>"El usuario no se encuentra registrado"
+        "errors"=> [
+            "code"=>"Error-1",
+
+            "title"=>"Unprocesable Entity",
+            "description" => "El usuario no tiene una cuenta activa"
     ]], 422);
     }
   }
   public function logout(){
-    $this->middleware('auth');
+    $sesionCerrada = $this->middleware('auth');
+    if(!$sesionCerrada){
+
+        return response()->json([
+            
+        "errors"=> [
+            "code"=>"Error-1",
+
+            "title"=>"Unprocesable Entity",
+            "description" => "Ha ocurrido un error con el cierre de sesion"
+    ]], 422);
+    }else{
+
     Auth::logout();
     return response()->json( "Haz salido de la sesion",200);
+    }
   }
  
 }
