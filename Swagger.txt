@@ -17,8 +17,8 @@ tags:
   externalDocs:
     description: "Find out more"
     url: "https://github.com/NavarroKofs/Yu-Gi-API"
-- name: "store"
-  description: "Access to Petstore orders"
+- name: "card"
+  description: "Returns card information"
 - name: "user"
   description: "Operations about user"
   externalDocs:
@@ -284,12 +284,12 @@ paths:
       - petstore_auth:
         - "write:pets"
         - "read:pets"
-  /store/inventory:
+  /card:
     get:
       tags:
-      - "store"
-      summary: "Returns pet inventories by status"
-      description: "Returns a map of status codes to quantities"
+      - "card"
+      summary: "Returns all cards"
+      description: "Devuelve toda las cartas en la base de datos con su información y precios."
       operationId: "getInventory"
       produces:
       - "application/json"
