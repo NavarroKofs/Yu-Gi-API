@@ -1,0 +1,297 @@
+swagger: "2.0"
+info:
+  description: "This is a sample server Petstore server.  You can find out more about     Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).      For this sample, you can use the api key `special-key` to test the authorization     filters."
+  version: "1.0.0"
+  title: "Yu-Gi-API"
+  termsOfService: "#"
+  contact:
+    email: "apiteam@swagger.io"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "petstore.swagger.io"
+basePath: "/v1"
+tags:
+- name: "decklist"
+  description: "Operations related to customized decklist management"
+schemes:
+- "https"
+- "http"
+paths:
+  /decklist:
+    post:
+      tags:
+      - "decklist"
+      summary: "Creates a new customized decklist"
+      description: ""
+      operationId: "createDecklist"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "request"
+        description: "Information of the new Decklist"
+        required: true
+        schema:
+          $ref: "#/definitions/CreateDecklist"
+      responses:
+        201:
+          description: "Created succesfuly"
+          schema:
+            $ref: "#/definitions/Decklist"
+        422:
+          description: "Unprocessable entity"
+          schema:
+            $ref: "#/definitions/Error"
+    delete:
+      tags:
+      - "decklist"
+      summary: "Deletes an existing decklist"
+      description: ""
+      operationId: "deleteDecklist"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "request"
+        description: "Name of the decklist to delete"
+        required: true
+        schema:
+          $ref: "#/definitions/DeleteDecklist"
+      responses:
+        204:
+          description: "Decklist successfuly removed"
+        404:
+          description: "Decklist not found"
+          schema:
+            $ref: "#/definitions/Error"
+  /decklist/{name}:
+    get:
+      tags:
+      - "decklist"
+      summary: "Finds decklist by status"
+      description: ""
+      operationId: "findDeckByName"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "name"
+        in: "path"
+        description: "Name of the deck to find"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+              $ref: "#/definitions/Decklist"
+        404:
+          description: "Decklist not found"
+          schema:
+            $ref: "#/definitions/Error"
+    post:
+      tags:
+      - "decklist"
+      summary: "Adds new card to a deck"
+      description: ""
+      operationId: "addCards"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "name"
+        in: "path"
+        description: "Name of the deck to modify"
+        required: true
+        type: "string"
+      - name: "request"
+        in: "body"
+        description: "List of cards to add"
+        required: true
+        schema:
+          $ref: "#/definitions/AddCard"
+      responses:
+        200:
+          description: "Card added successfuly"
+          schema:
+            $ref: "#/definitions/Decklist"
+        422:
+          description: "Unprocessable entity"
+          schema:
+            $ref: "#/definitions/Error"
+    delete:
+      tags:
+      - "decklist"
+      summary: "Deletes a card to a deck"
+      description: ""
+      operationId: "deleteCards"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "name"
+        in: "path"
+        description: "Name of the deck to modify"
+        required: true
+        type: "string"
+      - name: "request"
+        in: "body"
+        description: "Name of the card to delete"
+        required: true
+        schema:
+          $ref: "#/definitions/DeleteCard"
+      responses:
+        200:
+          description: "Card deleted successfuly"
+          schema:
+            $ref: "#/definitions/Decklist"
+        404:
+          description: "Decklist not found"
+          schema:
+            $ref: "#/definitions/Error"
+definitions:
+  cardsArray:
+    type: "object"
+    properties:
+      name:
+         type: "string"
+         example: "Ghostrick lantern"
+      amount:
+        type: "integer"
+        format: "int64"
+        example: 3
+    xml:
+      name: "Tag"
+  Cards:
+    type: "array"
+    xml:
+      name: "cards"
+      wrapped: true
+    items:
+      $ref: "#/definitions/cardsArray"
+  DataCreateDecklist:
+    type: "object"
+    required:
+    - "name"
+    - "cards"
+    properties:
+      name:
+        type: "string"
+        example: "Ghostrick"
+      cards:
+        $ref: "#/definitions/Cards"
+  DataDecklist:
+    type: "object"
+    required:
+    - "name"
+    - "cards"
+    properties:
+      name:
+        type: "string"
+        example: "Ghostrick"
+      cards:
+        $ref: "#/definitions/Cards"
+      Size:
+        type: "integer"
+        format: "int64"
+        example: 3
+      Legality:
+        type: "boolean"
+        example: false
+  CreateDecklist:
+    type: "object"
+    required:
+    - "data"
+    properties:
+      data:
+        $ref: "#/definitions/DataCreateDecklist"
+    xml:
+      name: "Decklist"
+  Decklist:
+    type: "object"
+    required:
+    - "data"
+    properties:
+      data:
+        $ref: "#/definitions/DataDecklist"
+    xml:
+      name: "Decklist"
+  DataDeleteDecklist:
+    type: "object"
+    required:
+    - "name"
+    properties:
+      name:
+        type: "string"
+        example: "Ghostrick"
+  DeleteDecklist:
+    type: "object"
+    required:
+    - "data"
+    properties:
+      data:
+        $ref: "#/definitions/DataDeleteDecklist"
+    xml:
+      name: "DeleteDecklist"
+  DataAddCard:
+    type: "array"
+    xml:
+      name: "cards"
+      wrapped: true
+    items:
+      $ref: "#/definitions/cardsArray"
+  AddCard:
+    type: "object"
+    required:
+    - "data"
+    properties:
+      data:
+        $ref: "#/definitions/DataAddCard"
+    xml:
+      name: "AddCard"
+  DataDeleteCard:
+    type: "object"
+    required:
+    - "card"
+    properties:
+      name:
+        type: "string"
+        example: "Ghostrick lantern"
+  DeleteCard:
+    type: "object"
+    required:
+    - "data"
+    properties:
+      data:
+        $ref: "#/definitions/DataDeleteCard"
+    xml:
+      name: "DeleteCard"
+  ErrorData:
+    type: "object"
+    required:
+    - "code"
+    - "description"
+    properties:
+      code:
+        type: "integer"
+        format: "int64"
+        example: 422
+      description:
+        type: "string"
+        example: "Deck name already taken"
+    xml:
+      name: "Decklist"
+  Error:
+    type: "object"
+    required:
+    - "error"
+    properties:
+      error:
+        $ref: "#/definitions/ErrorData"
+    xml:
+      name: "Decklist"
+externalDocs:
+  description: "Find out more about Swagger"
+  url: "http://swagger.io"
