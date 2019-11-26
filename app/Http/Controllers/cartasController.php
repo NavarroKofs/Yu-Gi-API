@@ -124,7 +124,7 @@ class cartasController extends Controller
             return response()->json([
                 "errors"=> ["code"=> "ERROR-1",
                 "title"=>  "Unprocessable Entity",
-                "description"=> 'you must enter the name of the card'
+                "description"=> 'you must enter the name of the set'
                 ]]  , 422);
         }
         $ruta_base_de_cartas = "https://db.ygoprodeck.com/api/v5/cardinfo.php?set=$name_set";
@@ -159,7 +159,7 @@ class cartasController extends Controller
             return response()->json([
                 "errors"=> ["code"=> "ERROR-1",
                 "title"=>  "Unprocessable Entity",
-                "description"=> 'you must enter the name of the card'
+                "description"=> 'you must enter the name of the archetype'
                 ]]  , 422);
         }
         $ruta_base_de_cartas = "https://db.ygoprodeck.com/api/v5/cardinfo.php?archetype=$archetype_name";
