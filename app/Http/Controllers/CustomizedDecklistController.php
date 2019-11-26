@@ -19,11 +19,11 @@ class CustomizedDecklistController extends Controller
 
       if (customizedDecklist::find($name)) {
         $response = [
-                    "error"=> ["code"=> "423",
+                    "error"=> ["code"=> "422",
                                "description" => "Deck name already taken"
                               ]
                     ];
-        return response()->json($response,423);
+        return response()->json($response,422);
       }
 
 
