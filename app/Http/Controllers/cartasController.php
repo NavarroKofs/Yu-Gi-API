@@ -80,7 +80,7 @@ class cartasController extends Controller
         $status = substr($headers[0], 9, 3);
         if ($status != '200') {
             return response()->json([
-                "errors"=> ["code"=> "ERROR-3",
+                "error"=> ["code"=> "ERROR-3",
                 "title"=>  "Service Unavailable",
                 "description"=> 'The server is currently unable to handle the request due to a temporary 
                 overload or scheduled maintenance, which will likely be alleviated after some delay.'
@@ -154,14 +154,14 @@ class cartasController extends Controller
     }
 
     public function show_all_cards_of_archetype($archetype){
-        $archetype_name = str_replace (" ", "%20", $archetype);
-        if ($archetype_name == ""){
+        if ($archetype == ""){
             return response()->json([
-                "errors"=> ["code"=> "ERROR-1",
-                "title"=>  "Unprocessable Entity",
+                "errors"=> ["code"=> "ERROR-4",
+                "title"=>  "Bad Request",
                 "description"=> 'you must enter the name of the archetype'
                 ]]  , 422);
         }
+        $archetype_name = str_replace (" ", "%20", $archetype);
         $ruta_base_de_cartas = "https://db.ygoprodeck.com/api/v5/cardinfo.php?archetype=$archetype_name";
         $headers = get_headers($ruta_base_de_cartas);
         $status = substr($headers[0], 9, 3);
