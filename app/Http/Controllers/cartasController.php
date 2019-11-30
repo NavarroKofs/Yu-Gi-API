@@ -30,11 +30,13 @@ class cartasController extends Controller
         }
         if ($instruccion == "name"){
             $ruta_base_de_cartas = "https://db.ygoprodeck.com/api/v5/cardinfo.php?name=$nombreCarta";
-            return response()->json(self::crear_JSON($ruta_base_de_cartas), 200);
+            $solicitud = self::crear_JSON($ruta_base_de_cartas);
+            return $solicitud;
         }
         if($instruccion == "fname"){
             $ruta_base_de_cartas = "https://db.ygoprodeck.com/api/v5/cardinfo.php?&fname=$nombreCarta";
-            return response()->json(self::paginacion($ruta_base_de_cartas), 200);
+            $solicitud = self::paginacion($ruta_base_de_cartas);
+            return $solicitud;
         }
         return response()->json([
             "errors"=> ["code"=> "ERROR-1",
