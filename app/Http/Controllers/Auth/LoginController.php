@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Auth;
 use Auth;
 use App\Http\Controllers\Controller;
-use App\User;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
+//use App\User;
+
 
 class LoginController extends Controller
 {
@@ -14,20 +14,22 @@ class LoginController extends Controller
             'email'=>'email|required|string',
             'password' => 'required|string'
         ]);
-    //return $credentials;
-    if(auth::attempt($credentials)){
+  
+    if(Auth::attempt($credentials)){
         return response()->json($credentials, 200);
     }else{
 
     return response()->json([
         "errors"=> [
-            "code"=>"Error-1",
+            "code"=>"422",
 
-            "title"=>"Unprocesable Entity",
-            "description" => "El usuario no tiene una cuenta activa"
+            "description"=>"Unprocessable Entity",
+            
     ]], 422);
     }
   }
+
+  
   public function logout(){
     $sesionCerrada = $this->middleware('auth');
     if(!$sesionCerrada){
@@ -38,12 +40,12 @@ class LoginController extends Controller
             "code"=>"Error-1",
 
             "title"=>"Unprocesable Entity",
-            "description" => "Ha ocurrido un error con el cierre de sesion"
+
     ]], 422);
     }else{
 
     Auth::logout();
-    return response()->json( "Haz salido de la sesion",200);
+    return response()->json( "Session closed",200);
     }
   }
  

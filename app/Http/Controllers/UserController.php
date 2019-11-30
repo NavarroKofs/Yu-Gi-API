@@ -5,7 +5,8 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
-class YUserController extends Controller
+use Illuminate\Support\Str;
+class UserController extends Controller
 {
     //
 	     public function store(Request $request)
@@ -13,23 +14,23 @@ class YUserController extends Controller
 	    	if(is_null($request->name)){
 	    		     return response()->json([
 
-	               "errors"=> ["code"=> "ERROR-1",
+	               "errors"=> ["code"=> "422",
 	               "title"=>  "Unprocessable Entity",
-	               "description"=> "Es necesario ingresar un nombre"
+	               "description"=> "Name missing"
 	               ]]  , 422);
 	    	}elseif (is_null($request->password)) {
 	    		     return response()->json([
 
-	               "errors"=> ["code"=> "ERROR-1",
+	               "errors"=> ["code"=> "422",
 	               "title"=>  "Unprocessable Entity",
-	               "description"=> "Es necesario ingresar una contrasena"
+	               "description"=> "Password missing"
 	               ]]  , 422);
 	    	}elseif (is_null($request->email)) {
 	    		     return response()->json([
 
-	               "errors"=> ["code"=> "ERROR-1",
+	               "errors"=> ["code"=> "422",
 	               "title"=>  "Unprocessable Entity",
-	               "description"=> "Es necesario ingresar un email"
+	               "description"=> "Email missing"
 	               ]]  , 422);
 	    	}else{
 
@@ -37,7 +38,9 @@ class YUserController extends Controller
 	    	 $usuario = DB::table('users')->insert([
 	    'email' => $request->email,
 	    'name' => $request->name,
-	    'password' => $request->password
+	    'password' => $request->password,
+	    'remember_token' => Str::random(10),
+	    'email_verified_at' => now()
 	]);
 	    	 $resultado = [
 
