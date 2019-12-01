@@ -39,8 +39,7 @@ class UserController extends Controller
 	    'email' => $request->email,
 	    'name' => $request->name,
 	    'password' => $request->password,
-	    'remember_token' => Str::random(10),
-	    'email_verified_at' => now()
+	    'remember_token' => Str::random(10)
 	]);
 	    	 $resultado = [
 

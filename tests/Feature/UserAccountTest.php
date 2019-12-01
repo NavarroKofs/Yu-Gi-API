@@ -423,7 +423,7 @@ class UserAccountTest extends TestCase
 
         $response1 = $this->json('POST', '/api/v1/login', $newRequest); 
 
-        $response1->assertStatus(422);
+        $response1->assertStatus(401);
         $response1->assertJsonStructure([
             'errors'=> [
             'code',
@@ -431,8 +431,8 @@ class UserAccountTest extends TestCase
         ]]);
 
         $response1->assertJsonFragment([
-        'code'=> '422',
-        'description'=> 'Unprocessable Entity',
+        'code'=> '401',
+        'description'=> 'Unauthorized',
         
         ]);
     }
