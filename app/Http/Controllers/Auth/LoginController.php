@@ -3,17 +3,20 @@
 namespace App\Http\Controllers\Auth;
 use Auth;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 //use App\User;
 
 
 class LoginController extends Controller
 {
-  public function login(){
-    $credentials = $this->validate(request(),
+  public function login(Request $request){
+    $credentials = $this->validate($request,
         [
             'email'=>'email|required|string',
             'password' => 'required|string'
         ]);
+  
+    
   
     if(Auth::attempt($credentials)){
         return response()->json($credentials, 200);
@@ -21,11 +24,11 @@ class LoginController extends Controller
 
     return response()->json([
         "errors"=> [
-            "code"=>"422",
+            "code"=>"401",
 
-            "description"=>"Unprocessable Entity",
+            "description"=>"Unauthorized",
             
-    ]], 422);
+    ]], 401);
     }
   }
 
@@ -41,7 +44,7 @@ class LoginController extends Controller
 
             "title"=>"Unprocesable Entity",
 
-    ]], 422);
+    ]], 401);
     }else{
 
     Auth::logout();
