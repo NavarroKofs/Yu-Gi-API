@@ -14,16 +14,14 @@ basePath: "/v1"
 tags:
 - name: "decklist"
   description: "Operations related to customized decklist management"
-<<<<<<< HEAD
+
 - name: "user account"
   description: "Operations related to user management"
-=======
->>>>>>> 5a3e15d1d020e13442fe0f876f36067ab286d0c4
 schemes:
 - "https"
 - "http"
 paths:
-<<<<<<< HEAD
+
   /user:
     post:
       tags:
@@ -173,9 +171,6 @@ paths:
           description: "Unprocessable Entity"
           schema:
             $ref: "#/definitions/Error1"
-
-=======
->>>>>>> 5a3e15d1d020e13442fe0f876f36067ab286d0c4
   /decklist:
     post:
       tags:
@@ -310,10 +305,7 @@ paths:
           schema:
             $ref: "#/definitions/Error"
 definitions:
-<<<<<<< HEAD
-  
-=======
->>>>>>> 5a3e15d1d020e13442fe0f876f36067ab286d0c4
+
   cardsArray:
     type: "object"
     properties:
@@ -454,7 +446,7 @@ definitions:
         $ref: "#/definitions/ErrorData"
     xml:
       name: "Decklist"
-<<<<<<< HEAD
+
   Unavailable:
     type: "object"
     required:
@@ -652,8 +644,6 @@ definitions:
 externalDocs:
   description: "Find out more about Swagger"
   url: "http://swagger.io"
-=======
-externalDocs:
-  description: "Find out more about Swagger"
-  url: "http://swagger.io"
->>>>>>> 5a3e15d1d020e13442fe0f876f36067ab286d0c4
+
+
+
