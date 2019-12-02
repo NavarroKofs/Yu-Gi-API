@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Mail;
 
     class ResetPasswordController extends Controller
     {
@@ -85,17 +86,22 @@ use Illuminate\Support\Facades\Validator;
         }
         private function sendResetEmail($email, $token){
        
-    $user = DB::table('users')->where('email', $email)->select('email')->first();
-
-    $link = config('base_url') . 'password/reset/' . $token . '?email=' . urlencode($user->email);
-
-        try {
-        
+    $userEmail = DB::table('users')->where('email', $email)->select('email')->first();
+    $username = DB::table('users')->where('email', $email)->select('name')->first();
+    
+     if($userEmail){
+        $datos =[];
+            $datos['emai']=$userEmail;
+            Mail::send('emails', ['token' => $token, 'email'=> $email], function($msg)use($email){
+                $msg->from('poiupioroleaowo@gmail.com', 'PoioTeam');
+                $msg->to($email)->subject('datos enviados');
+            });
             return true;
-        } catch (\Exception $e) {
-            return false;
-        }
-        }
+
+     }else{
+        return false;
+     }
+             }
 
     public function resetPasswordComplete(Request $request)
 {
