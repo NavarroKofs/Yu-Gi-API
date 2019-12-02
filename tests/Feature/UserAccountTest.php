@@ -69,14 +69,16 @@ class UserAccountTest extends TestCase
         
         $response->assertJsonStructure([
             'errors'=> [
-            'code',
-            'title',
-            'description'
+            'name'
         ]]);
         $response->assertJsonFragment([
-        'code'=> '422',
-        'title'=> 'Unprocessable Entity',
-        'description'=> 'Name missing'
+        //'code'=> '422',
+          "message"=>"The given data was invalid.",
+        'errors'=>[
+
+          "name"=>["The name field is required."]
+        ]
+        //'description'=> 'Name missing'
         ]);
     }
 
@@ -96,14 +98,18 @@ class UserAccountTest extends TestCase
         
         $response->assertJsonStructure([
             'errors'=> [
-            'code',
-            'title',
-            'description'
+           'email'
         ]]);
         $response->assertJsonFragment([
-        'code'=> '422',
-        'title'=> 'Unprocessable Entity',
-        'description'=> 'Email missing'
+        //'code'=> '422',
+          "message"=>"The given data was invalid.",
+        'errors'=>[
+
+          "email"=>["The email must be a valid email address.",
+          "The email field is required."
+      ]
+        ]
+        //'description'=> 'Name missing'
         ]);
     }
 
@@ -123,14 +129,17 @@ class UserAccountTest extends TestCase
         
         $response->assertJsonStructure([
             'errors'=> [
-            'code',
-            'title',
-            'description'
+            'password'
         ]]);
         $response->assertJsonFragment([
-        'code'=> '422',
-        'title'=> 'Unprocessable Entity',
-        'description'=> 'Password missing'
+        //'code'=> '422',
+          "message"=>"The given data was invalid.",
+        'errors'=>[
+
+          "password"=>["The password field is required."
+      ]
+        ]
+        //'description'=> 'Name missing'
         ]);
     }
 
