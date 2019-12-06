@@ -23,8 +23,8 @@ Route::get('v1/cards/{card_name}', 'cardsController@searchByName');
 
 Route::get('v1/cards/', 'cardsController@showAllCards');
 
-Route::get('v1/cards/banlist/{ruling_type}', 'cartasController@showBanlist');
+Route::get('v1/cards/banlist/{ruling_type}', 'cardsController@showBanlist');
 
-Route::get('v1/cards/set/{set_name}', 'cartasController@showAllCardsOfASet');
+Route::get('v1/cards/set/{set_name}', 'cardsController@showAllCardsOfASet');
 
-Route::get('v1/cards/archetype/{archetype_name}', 'cartasController@showAllCardsOfAnArchetype');
+Route::get('v1/cards/archetype/{archetype_name}', 'cardsController@showAllCardsOfAnArchetype');

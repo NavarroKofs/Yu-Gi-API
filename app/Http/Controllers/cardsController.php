@@ -19,7 +19,7 @@ class cardsController extends Controller
                 "errors"=> ["code"=> "ERROR-2",
                 "title"=>  "Not Found",
                 "description"=> 'No card matching your query was found in the database.'
-                ]]  , 404); 
+                ]]  , 404);
         }
         $dollar_in_peso = self::getPrice();
         $cardInfo = self::getContent($cardDatabasePath);
@@ -74,10 +74,10 @@ class cardsController extends Controller
         $validation = self::getStatus($cardDatabasePath);
         if ($validation != '200') {
             return response()->json([
-                "errors"=> ["code"=> "ERROR-2",
-                "title"=>  "Not Found",
-                "description"=> 'No card matching your query was found in the database.'
-                ]]  , 404); 
+                "errors"=> ["code"=> "ERROR-4",
+                "title"=>  "Service Unavailable",
+                "description"=> 'The server is unvailable. Try again later.'
+                ]]  , 503); 
         }
         $dollar_in_peso = self::getPrice();
         $cardInfo = self::getContent($cardDatabasePath);
