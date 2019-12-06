@@ -13,8 +13,8 @@ class cardsController extends Controller
     public function searchByName($request){
         $cardName = str_replace (" ", "%20", $request);
         $cardDatabasePath = "https://db.ygoprodeck.com/api/v5/cardinfo.php?name=$cardName";
-        $validation = self::getStatus($cardDatabasePath);
-        if ($validation != '200') {
+        $cardInfo = self::getContent($cardDatabasePath);
+        if ($cardInfo->getStatusCode() != '200') {
             return response()->json([
                 "errors"=> ["code"=> "ERROR-2",
                 "title"=>  "Not Found",
@@ -22,25 +22,23 @@ class cardsController extends Controller
                 ]]  , 404);
         }
         $dollar_in_peso = self::getPrice();
-        $cardInfo = self::getContent($cardDatabasePath);
-        $data = self::createJSON($cardInfo, $dollar_in_peso);
+        $data = self::convertPricesToMexicanPesos(json_decode($cardInfo->getBody(), true), $dollar_in_peso);
         return $data;
     }
 
     public function fuzzySearch(Request $request){
         $cardName = str_replace (" ", "%20", $request->input('fname'));
         $cardDatabasePath = "https://db.ygoprodeck.com/api/v5/cardinfo.php?&fname=$cardName";
-        $validation = self::getStatus($cardDatabasePath);
-        if ($validation != '200') {
+        $cardInfo = self::getContent($cardDatabasePath);
+        if ($cardInfo->getStatusCode() != '200') {
             return response()->json([
                 "errors"=> ["code"=> "ERROR-2",
                 "title"=>  "Not Found",
                 "description"=> 'No card matching your query was found in the database.'
-                ]]  , 404); 
+                ]]  , 404);
         }
         $dollar_in_peso = self::getPrice();
-        $cardInfo = self::getContent($cardDatabasePath);
-        $data = collect(self::createJSON($cardInfo, $dollar_in_peso));
+        $data = collect(self::convertPricesToMexicanPesos(json_decode($cardInfo->getBody(), true), $dollar_in_peso));
         // Set default page
         $page = request()->has('page') ? request('page') : 1;
         // Set default per page
@@ -50,7 +48,7 @@ class cardsController extends Controller
         return self::pagination($data, $offset, $page, $perPage);
     }
 
-    public function createJSON($cardInfo, $dollar_in_peso){
+    public function convertPricesToMexicanPesos($cardInfo, $dollar_in_peso){
         $num_cards = count($cardInfo);
         $rules = array(
             'card_sets' => 'required',
@@ -71,17 +69,16 @@ class cardsController extends Controller
 
     public function showAllCards(){
         $cardDatabasePath = "https://db.ygoprodeck.com/api/v5/cardinfo.php";
-        $validation = self::getStatus($cardDatabasePath);
-        if ($validation != '200') {
+        $cardInfo = self::getContent($cardDatabasePath);
+        if ($cardInfo->getStatusCode() != '200') {
             return response()->json([
-                "errors"=> ["code"=> "ERROR-4",
-                "title"=>  "Service Unavailable",
-                "description"=> 'The server is unvailable. Try again later.'
-                ]]  , 503); 
+                "errors"=> ["code"=> "ERROR-2",
+                "title"=>  "Not Found",
+                "description"=> 'No card matching your query was found in the database.'
+                ]]  , 404);
         }
         $dollar_in_peso = self::getPrice();
-        $cardInfo = self::getContent($cardDatabasePath);
-        $data = collect(self::createJSON($cardInfo, $dollar_in_peso));
+        $data = collect(self::convertPricesToMexicanPesos(json_decode($cardInfo->getBody(), true), $dollar_in_peso));
         // Set default page
         $page = request()->has('page') ? request('page') : 1;
         // Set default per page
@@ -113,17 +110,16 @@ class cardsController extends Controller
                 ]]  , 422);
         }
         $cardDatabasePath = "https://db.ygoprodeck.com/api/v5/cardinfo.php?set=$name_set";
-        $validation = self::getStatus($cardDatabasePath);
-        if ($validation != '200') {
+        $cardInfo = self::getContent($cardDatabasePath);
+        if ($cardInfo->getStatusCode() != '200') {
             return response()->json([
                 "errors"=> ["code"=> "ERROR-2",
                 "title"=>  "Not Found",
                 "description"=> 'No card matching your query was found in the database.'
-                ]]  , 404); 
+                ]]  , 404);
         }
         $dollar_in_peso = self::getPrice();
-        $cardInfo = self::getContent($cardDatabasePath);
-        $data = collect(self::createJSON($cardInfo, $dollar_in_peso));
+        $data = collect(self::convertPricesToMexicanPesos(json_decode($cardInfo->getBody(), true), $dollar_in_peso));
         // Set default page
         $page = request()->has('page') ? request('page') : 1;
         // Set default per page
@@ -137,17 +133,16 @@ class cardsController extends Controller
         $ruling_type = strtolower($ruling);
         if(($ruling_type == 'ocg') or ($ruling_type == 'tcg') or ($ruling_type == 'goat')){
             $cardDatabasePath = "https://db.ygoprodeck.com/api/v5/cardinfo.php?banlist=$ruling_type";
-            $validation = self::getStatus($cardDatabasePath);
-            if ($validation != '200') {
+            $cardInfo = self::getContent($cardDatabasePath);
+            if ($cardInfo->getStatusCode() != '200') {
                 return response()->json([
                     "errors"=> ["code"=> "ERROR-2",
                     "title"=>  "Not Found",
                     "description"=> 'No card matching your query was found in the database.'
-                    ]]  , 404); 
+                    ]]  , 404);
             }
             $dollar_in_peso = self::getPrice();
-            $cardInfo = self::getContent($cardDatabasePath);
-            $data = collect(self::createJSON($cardInfo, $dollar_in_peso));
+            $data = collect(self::convertPricesToMexicanPesos(json_decode($cardInfo->getBody(), true), $dollar_in_peso));
             // Set default page
             $page = request()->has('page') ? request('page') : 1;
             // Set default per page
@@ -173,17 +168,16 @@ class cardsController extends Controller
         }
         $archetype_name = str_replace (" ", "%20", $archetype);
         $cardDatabasePath = "https://db.ygoprodeck.com/api/v5/cardinfo.php?archetype=$archetype_name";
-        $validation = self::getStatus($cardDatabasePath);
-        if ($validation != '200') {
+        $cardInfo = self::getContent($cardDatabasePath);
+        if ($cardInfo->getStatusCode() != '200') {
             return response()->json([
                 "errors"=> ["code"=> "ERROR-2",
                 "title"=>  "Not Found",
                 "description"=> 'No card matching your query was found in the database.'
-                ]]  , 404); 
+                ]]  , 404);
         }
         $dollar_in_peso = self::getPrice();
-        $cardInfo = self::getContent($cardDatabasePath);
-        $data = collect(self::createJSON($cardInfo, $dollar_in_peso));
+        $data = collect(self::convertPricesToMexicanPesos(json_decode($cardInfo->getBody(), true), $dollar_in_peso));
         // Set default page
         $page = request()->has('page') ? request('page') : 1;
         // Set default per page
@@ -193,16 +187,10 @@ class cardsController extends Controller
         return self::pagination($data, $offset, $page, $perPage);
     }
 
-    public function getStatus($url){
-        $headers = get_headers($url);
-        $status = substr($headers[0], 9, 3);
-        return $status;
-    }
-
     public function getContent($cardDatabasePath){
-        $cardJson = file_get_contents($cardDatabasePath);
-        $cardInfo = json_decode($cardJson, true);
-        return $cardInfo;
+        $client = new \GuzzleHttp\Client();
+        $response = $client->request('GET', $cardDatabasePath);
+        return $response;
     }
 
     public function getPrice(){
