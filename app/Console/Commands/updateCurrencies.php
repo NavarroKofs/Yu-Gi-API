@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Currency;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Validator;
 use PhpParser\Node\Expr\Print_;
 
 class updateCurrencies extends Command
@@ -39,15 +40,16 @@ class updateCurrencies extends Command
      */
     public function handle()
     {
-        $ruta_divisas = "https://frankfurter.app/latest?amount=1&from=USD&to=MXN";
-        $convertCurrency = file_get_contents($ruta_divisas);
+
+        $currencyLink = "https://frankfurter.app/latest?amount=1&from=USD&to=MXN";
+        $convertCurrency = file_get_contents($currencyLink);
         $value = json_decode($convertCurrency, true);
-        $pesosMexicanos = $value['rates']['MXN'];
+        $mexicanPesos = $value['rates']['MXN'];
         $currency = Currency::find(1);
         if ($currency === null) {
-            $currency = Currency::create(["moneda" => 'MXN', "valor" => $pesosMexicanos]);
+            $currency = Currency::create(["moneda" => 'MXN', "valor" => $mexicanPesos]);
         } else {
-            $currency->valor = $pesosMexicanos;
+            $currency->valor = $mexicanPesos;
             $currency->moneda = 'MXN';
             $currency->save();
         }

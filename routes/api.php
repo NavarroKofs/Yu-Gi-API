@@ -17,14 +17,14 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('v1/cartas/{nombre_carta}', 'cartasController@busqueda');
+Route::get('v1/cards/search', 'cardsController@fuzzySearch');
 
-Route::get('v1/cartas/', 'cartasController@show_all_cards');
+Route::get('v1/cards/{card_name}', 'cardsController@searchByName');
 
-Route::post('decklist',"CustomizedDecklistController@store");
+Route::get('v1/cards/', 'cardsController@showAllCards');
 
-Route::get('v1/cartas/banlist/{ruling_type}', 'cartasController@show_banlist');
+Route::get('v1/cards/banlist/{ruling_type}', 'cartasController@showBanlist');
 
-Route::get('v1/cartas/set/{set_name}', 'cartasController@show_all_cards_of_a_set');
+Route::get('v1/cards/set/{set_name}', 'cartasController@showAllCardsOfASet');
 
-Route::get('v1/cartas/archetype/{archetype_name}', 'cartasController@show_all_cards_of_archetype');
+Route::get('v1/cards/archetype/{archetype_name}', 'cartasController@showAllCardsOfAnArchetype');
