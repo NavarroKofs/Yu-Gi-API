@@ -16,7 +16,7 @@ class UserAccountTest extends TestCase
      *
      * @return void
      */
-    public function test_Create_User_Account()
+    public function test_create_user_account()
     {
       $email = $this->faker->unique()->safeEmail;
 
@@ -53,7 +53,7 @@ class UserAccountTest extends TestCase
         );
     }
 
-    public function test_Create_User_Account_Without_Name()
+    public function test_create_user_account_without_name()
     {
       $email = $this->faker->unique()->safeEmail;
 
@@ -82,7 +82,7 @@ class UserAccountTest extends TestCase
         ]);
     }
 
-    public function test_Create_User_Account_Without_Email()
+    public function test_create_user_account_without_email()
     {
       $email = $this->faker->unique()->safeEmail;
 
@@ -113,7 +113,7 @@ class UserAccountTest extends TestCase
         ]);
     }
 
-    public function test_Create_User_Account_Without_Password()
+    public function test_create_user_account_without_password()
     {
       $email = $this->faker->unique()->safeEmail;
 
@@ -143,7 +143,7 @@ class UserAccountTest extends TestCase
         ]);
     }
 
-    public function test_Reset_Password()
+    public function test_reset_password()
     {
 
         $email1 = $this->faker->unique()->safeEmail;
@@ -175,7 +175,7 @@ class UserAccountTest extends TestCase
 
     }
 
-    public function test_Reset_Password_For_Unregistered_Account()
+    public function test_reset_password_for_unregistered_account()
     {
 
         $email = $this->faker->unique()->safeEmail;
@@ -202,7 +202,7 @@ class UserAccountTest extends TestCase
         ]);
 
     }
-    public function test_Reset_PasswordM(){
+    public function test_reset_passwordm(){
         $email1 = $this->faker->unique()->safeEmail;
 
         $userData1 = [
@@ -235,7 +235,7 @@ class UserAccountTest extends TestCase
 
     }
 
-    public function test_Reset_Password_Missing(){
+    public function test_reset_password_missing(){
         $email1 = $this->faker->unique()->safeEmail;
 
         $userData1 = [
@@ -280,7 +280,7 @@ class UserAccountTest extends TestCase
         ]);
     }
 
-    public function test_Reset_EmailMissing(){
+    public function test_reset_email_missing(){
         $email1 = $this->faker->unique()->safeEmail;
 
         $userData1 = [
@@ -325,7 +325,7 @@ class UserAccountTest extends TestCase
         ]);
     }
 
-    public function test_Reset_InvalidToken(){
+    public function test_reset_invalid_token(){
         $email1 = $this->faker->unique()->safeEmail;
 
         $userData1 = [
@@ -371,7 +371,7 @@ class UserAccountTest extends TestCase
         ]);
     }
 
-    public function test_Login1()
+    public function test_login1()
     {
      $email1 = $this->faker->unique()->safeEmail;
 
@@ -411,7 +411,7 @@ class UserAccountTest extends TestCase
         $response1->assertStatus(200);
      
     }
-    public function test_Login()
+    public function test_login()
     {
       $email = $this->faker->unique()->safeEmail;
 
