@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\customizedDecklist;
 use Illuminate\Http\Request;
+use App\legality;
 
 class CustomizedDecklistController extends Controller
 {
@@ -29,10 +30,10 @@ class CustomizedDecklistController extends Controller
 
       try {
           $cards = $request->data["cards"];
-          $answer = self::legality($cards);
-          $legality = $answer[0];
-          $cardTotal = $answer[1];
-          $illegalCards = $answer[2];
+          $answer = legality::legality($cards);
+          $legality = $answer->legality;
+          $cardTotal = $answer->cardsInDeck;
+          $illegalCards = $answer->illegalCards;
       } catch (\Exception $e) {
         $cards = [];
         $legality = false;
@@ -66,10 +67,10 @@ class CustomizedDecklistController extends Controller
      * @param   $name
      * @return \Illuminate\Http\Response
      */
-    public function addCard(Request $request, $name)
+    public function addCard(Request $request, $deckName)
     {
 
-      if (!(customizedDecklist::find($name))) {
+      if (!(customizedDecklist::find($deckName))) {
       return response()->json([
            "errors"=> ["ID"=> "ADD_CARD-1",
            "title"=>  "Decklist not found",
@@ -87,22 +88,22 @@ class CustomizedDecklistController extends Controller
              ]]  , 422);
       }
 
-        $deckList = customizedDecklist::find($name);
+        $deckList = customizedDecklist::find($deckName);
         $newCards = $deckList->cards;
         for ($i=0; $i < count($cards) ; $i++) {
         array_push($newCards, $request->data["cards"][$i]);
       }
 
-      $answer = self::legality($newCards);
+      $answer = legality::legality($newCards);
 
       $deckList->cards = $newCards;
-      $deckList->legality = $answer[0];
-      $deckList->size = $answer[1];
-      $deckList->illegalCards = $answer[2];
+      $deckList->legality = $answer->legality;
+      $deckList->size = $answer->cardsInDeck;
+      $deckList->illegalCards = $answer->illegalCards;
       $deckList->save();
 
       $response = [
-                  "data"=> ["name"=> $name,
+                  "data"=> ["name"=> $deckName,
                             "cards"=> $deckList->cards,
                             "size" => $deckList->size,
                             "legality"=> $deckList->legality,
@@ -121,9 +122,9 @@ class CustomizedDecklistController extends Controller
      * @param   $name
      * @return \Illuminate\Http\Response
      */
-    public function removeCard(Request $request, $name)
+    public function removeCard(Request $request, $deckName, $cardName)
     {
-        if (!(customizedDecklist::find($name))) {
+        if (!(customizedDecklist::find($deckName))) {
         return response()->json([
              "errors"=> ["ID"=> "REMOVE_CARD-1",
              "title"=>  "Decklist not found",
@@ -131,23 +132,23 @@ class CustomizedDecklistController extends Controller
              ]]  , 404);
            }
 
-        $deckList = customizedDecklist::find($name);
+        $deckList = customizedDecklist::find($deckName);
         $cards = $deckList->cards;
         for ($i=0; $i < count($cards) ; $i++) {
-          if($cards[$i]['name']==$request->data["card"]){
+          if($cards[$i]['name']==$cardName){
             array_splice($cards, $i, $i);
           }
         }
-        $answer = self::legality($cards);
+        $answer = legality::legality($cards);
 
         $deckList->cards = $cards;
-        $deckList->legality = $answer[0];
-        $deckList->size = $answer[1];
-        $deckList->illegalCards = $answer[2];
+        $deckList->legality = $answer->legality;
+        $deckList->size = $answer->cardsInDeck;
+        $deckList->illegalCards = $answer->illegalCards;
         $deckList->save();
 
       $response = [
-                  "data"=> ["name"=> $name,
+                  "data"=> ["name"=> $deckName,
                             "cards"=> $deckList->cards,
                             "size" => $deckList->size,
                             "legality"=> $deckList->legality,
@@ -165,19 +166,19 @@ class CustomizedDecklistController extends Controller
      * @param  \App\customizedDecklist  $customizedDecklist
      * @return \Illuminate\Http\Response
      */
-    public function viewDecklist($name)
+    public function viewDecklist($deckName)
     {
-      if (!(customizedDecklist::find($name))) {
+      if (!(customizedDecklist::find($deckName))) {
       return response()->json([
            "errors"=> ["ID"=> "ERR_SHOW-1",
            "title"=>  "Decklist not found",
            "code"=>  "404",
            ]]  , 404);
       } else {
-        $deckList = customizedDecklist::findOrFail($name);
+        $deckList = customizedDecklist::findOrFail($deckName);
 
         $response = [
-                    "data"=> ["name"=> $name,
+                    "data"=> ["name"=> $deckName,
                               "cards"=> $deckList->cards,
                               "size" => $deckList->size,
                               "legality"=> $deckList->legality,
@@ -195,68 +196,17 @@ class CustomizedDecklistController extends Controller
      * @param  \App\customizedDecklist  $customizedDecklist
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request)
+    public function destroy(Request $request, $deckName)
     {
-        $name = $request->data['name'];
-        if (!(customizedDecklist::find($name))) {
+        if (!(customizedDecklist::find($deckName))) {
         return response()->json([
              "errors"=> ["ID"=> "ERR_DELETE-1",
              "title"=>  "Decklist not found",
              "code"=>  "404",
              ]]  , 404);
         } else {
-            customizedDecklist::destroy($name);
+            customizedDecklist::destroy($deckName);
             return response()->json($request,204);
       }
-    }
-
-    public function legality($cards){
-      $illegalCards = array();
-      $legality=true;
-      $cardTotal=0;
-
-
-      for ($i=0; $i < count($cards) ; $i++) {
-
-        $legalAmount;
-        $cardTotal+=$cards[$i]["amount"];
-        $cardName = str_replace(" ", "%20",$cards[$i]["name"]);
-        $route = "https://db.ygoprodeck.com/api/v5/cardinfo.php?banlist=tcg&name=".$cardName;
-
-        try {
-          $banListJson = file_get_contents($route);
-          $banListInfo = json_decode($banListJson,true);
-
-          $status_line = $http_response_header[0];
-          preg_match('{HTTP\/\S*\s(\d{3})}', $status_line, $match);
-          $status = $match[1];
-
-            $cardStatus = $banListInfo[0]["banlist_info"]["ban_tcg"];
-            switch ($cardStatus) {
-              case 'Semi-Limited':
-                $legalAmount=2;
-                break;
-              case 'Limited':
-                $legalAmount=1;
-                break;
-              default:
-                $legalAmount=0;
-                break;
-            }
-        } catch (\Exception $e) {
-          $legalAmount=3;
-        }
-        if ($cards[$i]["amount"]> $legalAmount) {
-          $legality=false;
-          array_push($illegalCards, $cards[$i]["name"]);
-        }
-      }
-      if (($cardTotal<40)||($cardTotal>60)) {
-        $legality=false;
-      }
-
-      $answer = [$legality, $cardTotal, $illegalCards];
-
-        return $answer;
     }
 }
