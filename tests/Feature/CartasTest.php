@@ -44,19 +44,16 @@ class CartasTest extends TestCase
         $response->assertStatus(200);
         // Assert the response has the correct structure
         $response->assertJsonStructure([
-                "current_page", "data", "first_page_url",
+                "current_page", "data" => [
+                    '*' => [
+                        "id", "name", "type", "desc", "atk", "def", "level",
+                        "race", "attribute", "archetype", "card_sets",
+                        "card_images", "card_prices"
+                    ]
+                ], "first_page_url",
                 "from", "last_page",  "last_page_url", "next_page_url",
                 "path", "per_page", "prev_page_url", "to", "total"
         ]);
-        // Assert the card has
-        // the correct data
-        /*//No sé como representarlo
-        $response->assertJsonStructure([
-            'data' => [
-                "id", "name", "type", "desc", "atk", "def", "level",
-                "race", "attribute", "archetype", "card_sets",
-                "card_images", "card_prices"]
-        ]);*/
     }
     //     El servidor no encuentra similitudes con la carta     //
     /** @test */
@@ -125,19 +122,16 @@ class CartasTest extends TestCase
         $response->assertStatus(200);
         // Assert the response has the correct structure
         $response->assertJsonStructure([
-                "current_page", "data", "first_page_url",
-                "from", "last_page",  "last_page_url", "next_page_url",
-                "path", "per_page", "prev_page_url", "to", "total"
+            "current_page", "data" => [
+                '*' => [
+                    "id", "name", "type", "desc", "atk", "def", "level",
+                    "race", "attribute", "archetype", "card_sets",
+                    "card_images", "card_prices"
+                ]
+            ], "first_page_url",
+            "from", "last_page",  "last_page_url", "next_page_url",
+            "path", "per_page", "prev_page_url", "to", "total"
         ]);
-        // Assert the card has
-        // the correct data
-        /*//No sé como representarlo
-        $response->assertJsonStructure([
-            'data' => [
-                "id", "name", "type", "desc", "atk", "def", "level",
-                "race", "attribute", "archetype", "card_sets",
-                "card_images", "card_prices"]
-        ]);*/
     }
     //     El cliente solicita una página específica de todas las cartas     //
     /** @test */
@@ -152,19 +146,16 @@ class CartasTest extends TestCase
         $response->assertStatus(200);
         // Assert the response has the correct structure
         $response->assertJsonStructure([
-                "current_page", "data", "first_page_url",
-                "from", "last_page",  "last_page_url", "next_page_url",
-                "path", "per_page", "prev_page_url", "to", "total"
+            "current_page", "data" => [
+                '*' => [
+                    "id", "name", "type", "desc", "atk", "def", "level",
+                    "race", "attribute", "archetype", "card_sets",
+                    "card_images", "card_prices"
+                ]
+            ], "first_page_url",
+            "from", "last_page",  "last_page_url", "next_page_url",
+            "path", "per_page", "prev_page_url", "to", "total"
         ]);
-        // Assert the card has
-        // the correct data
-        /*//No sé como representarlo
-        $response->assertJsonStructure([
-            'data' => [
-                "id", "name", "type", "desc", "atk", "def", "level",
-                "race", "attribute", "archetype", "card_sets",
-                "card_images", "card_prices"]
-        ]);*/
     }
     //     El cliente solicita todas las cartas de un set     //
     /** @test */
@@ -179,19 +170,16 @@ class CartasTest extends TestCase
         $response->assertStatus(200);
         // Assert the response has the correct structure
         $response->assertJsonStructure([
-                "current_page", "data", "first_page_url",
-                "from", "last_page",  "last_page_url", "next_page_url",
-                "path", "per_page", "prev_page_url", "to", "total"
+            "current_page", "data" => [
+                '*' => [
+                    "id", "name", "type", "desc", "atk", "def", "level",
+                    "race", "attribute", "archetype", "card_sets",
+                    "card_images", "card_prices"
+                ]
+            ], "first_page_url",
+            "from", "last_page",  "last_page_url", "next_page_url",
+            "path", "per_page", "prev_page_url", "to", "total"
         ]);
-        // Assert the card has
-        // the correct data
-        /*//No sé como representarlo
-        $response->assertJsonStructure([
-            'data' => [
-                "id", "name", "type", "desc", "atk", "def", "level",
-                "race", "attribute", "archetype", "card_sets",
-                "card_images", "card_prices"]
-        ]);*/
     }
     //     El cliente no introduce el valor de 'name' o 'fname'     //
     /** @test */
@@ -262,18 +250,15 @@ class CartasTest extends TestCase
         $response->assertStatus(200);
         // Assert the response has the correct structure
         $response->assertJsonStructure([
-                "current_page", "data", "first_page_url",
-                "from", "last_page",  "last_page_url", "next_page_url",
-                "path", "per_page", "prev_page_url", "to", "total"
+            "current_page", "data" => [
+                '*' => [
+                    "id", "name", "type", "desc", "atk", "def", "level",
+                    "race", "attribute", "archetype", "card_sets",
+                    "card_images", "card_prices"
+                ]
+            ], "first_page_url",
+            "from", "last_page",  "last_page_url", "next_page_url",
+            "path", "per_page", "prev_page_url", "to", "total"
         ]);
-        // Assert the card has
-        // the correct data
-        /*//No sé como representarlo
-        $response->assertJsonStructure([
-            'data' => [
-                "id", "name", "type", "desc", "atk", "def", "level",
-                "race", "attribute", "archetype", "card_sets",
-                "card_images", "card_prices"]
-        ]);*/
     }
 }

@@ -40,10 +40,17 @@ class updateCurrencies extends Command
      */
     public function handle()
     {
-
         $currencyLink = "https://frankfurter.app/latest?amount=1&from=USD&to=MXN";
-        $convertCurrency = file_get_contents($currencyLink);
-        $value = json_decode($convertCurrency, true);
+        $client = new \GuzzleHttp\Client();
+        $response = $client->request('GET', $currencyLink);
+        if($response->getStatusCode() != '200'){
+            return response()->json([
+                "errors"=> ["code"=> "ERROR-6",
+                "title"=>  "Unavailable Service",
+                "description"=> 'The server does not respond. Try later.'
+                ]]  , 503);
+        }
+        $value = json_decode($cardInfo->getBody(), true);
         $mexicanPesos = $value['rates']['MXN'];
         $currency = Currency::find(1);
         if ($currency === null) {

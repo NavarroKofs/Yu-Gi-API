@@ -188,9 +188,13 @@ class cardsController extends Controller
     }
 
     public function getContent($cardDatabasePath){
-        $client = new \GuzzleHttp\Client();
-        $response = $client->request('GET', $cardDatabasePath);
-        return $response;
+        try{
+            $client = new \GuzzleHttp\Client();
+            $response = $client->request('GET', $cardDatabasePath);
+            return $response;
+        }catch(\GuzzleHttp\Exception\RequestException $e){
+            return $e->getResponse();
+        }
     }
 
     public function getPrice(){
