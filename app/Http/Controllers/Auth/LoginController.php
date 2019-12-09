@@ -1,39 +1,55 @@
 <?php
 
 namespace App\Http\Controllers\Auth;
-
+use Auth;
 use App\Http\Controllers\Controller;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
+//use App\User;
+
 
 class LoginController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Login Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller handles authenticating users for the application and
-    | redirecting them to your home screen. The controller uses a trait
-    | to conveniently provide its functionality to your applications.
-    |
-    */
+  public function login(Request $request){
+    $credentials = $this->validate($request,
+        [
+            'email'=>'email|required|string',
+            'password' => 'required|string'
+        ]);
+  
+    
+  
+    if(Auth::attempt($credentials)){
+        return response()->json($credentials, 200);
+    }else{
 
-    use AuthenticatesUsers;
+    return response()->json([
+        "errors"=> [
+            "code"=>"401",
 
-    /**
-     * Where to redirect users after login.
-     *
-     * @var string
-     */
-    protected $redirectTo = '/home';
-
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('guest')->except('logout');
+            "description"=>"Unauthorized",
+            
+    ]], 401);
     }
+  }
+
+  
+  public function logout(){
+    $sesionCerrada = $this->middleware('auth');
+    if(!$sesionCerrada){
+
+        return response()->json([
+            
+        "errors"=> [
+            "code"=>"Error-1",
+
+            "title"=>"Unprocesable Entity",
+
+    ]], 401);
+    }else{
+
+    Auth::logout();
+    return response()->json( "Session closed",200);
+    }
+  }
+ 
 }

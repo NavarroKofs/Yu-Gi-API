@@ -1,0 +1,645 @@
+swagger: "2.0"
+info:
+  description: "This is an API targeted to help yu-gi-oh duelist to organize their decklists and wishlists in order to know the legality of their decks and an aproximate of their wishlists cost.\n The api also provides some other services like searching for a specific card o cards of the same archetype."
+  version: "1.0.0"
+  title: "Yu-Gi-API"
+  license:
+    name: "Powered by Laravel"
+    url: "https://laravel.com"
+host: "yu-gi-api.herokuapp.com"
+basePath: "/v1"
+tags:
+- name: "decklist"
+  description: "Operations related to customized decklist management"
+
+- name: "user account"
+  description: "Operations related to user management"
+schemes:
+- "https"
+- "http"
+paths:
+
+  /user:
+    post:
+      tags:
+      - "user account"
+      summary: "Creates a new user account"
+      description: "This endpoint creates a new user account"
+      operationId: "createUser"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "request"
+        
+        description: "Information of the new user account"
+        
+    
+        required: true
+        schema:
+          $ref: "#/definitions/CreateUser"
+      responses:
+        201:
+          description: "Created"
+          schema:
+            $ref: "#/definitions/DataCreateUserSuccesfully"
+        422:
+          description: "Unprocessable entity"
+          schema:
+            $ref: "#/definitions/Error2"
+  /login:
+    post:
+      tags:
+      - "user account"
+      summary: "Login to web app"
+      description: ""
+      operationId: "loginUser"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "required"
+        description: "Account user"
+        required: true
+        schema:
+          $ref: "#/definitions/Login"
+      responses:
+        200:
+          description: "Ok"
+        422:
+          description: "Unprocessable Entity"
+          schema:
+            $ref: "#/definitions/Error1"
+
+  /sendResetPass:
+     post:
+       
+      tags:
+      - "user account"
+      summary: "Send token to reset a user password"
+      description: ""
+      operationId: "userSend"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "required"
+        description: "Email to send token to reset password"
+        required: true
+        schema:
+          $ref: "#/definitions/Reset"
+      responses:
+        200:
+          description: "Ok"
+        422:
+          description: "Unprocessable Entity"
+          schema:
+            $ref: "#/definitions/Error1" 
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Error1"
+        503:
+          description: "Service Unavailable"
+          schema:
+            $ref: "#/definitions/ServiceUnavailable"
+  /resetPass1:
+     post:
+       
+      tags:
+      - "user account"
+      summary: "Reset a user password"
+      description: ""
+      operationId: "userReset1"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "required"
+        description: "Data to reset password (token, email, new password)"
+        required: true
+        schema:
+          $ref: "#/definitions/Reset1"
+      responses:
+        200:
+          description: "Ok"
+
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Error1"
+        422:
+          description: "Unprocessable Entity"
+          schema:
+            $ref: "#/definitions/Error1" 
+      
+  /logout:
+     post:
+       
+      tags:
+      - "user account"
+      summary: "Logout account user"
+      description: ""
+      operationId: "userLogout"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "required"
+        description: "User logout"
+        required: true
+        schema:
+          $ref: "#/definitions/Logout"
+      responses:
+        200:
+          description: "Ok"
+
+        422:
+          description: "Unprocessable Entity"
+          schema:
+            $ref: "#/definitions/Error1"
+  /decklist:
+    post:
+      tags:
+      - "decklist"
+      summary: "Creates a new customized decklist"
+      description: ""
+      operationId: "createDecklist"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "request"
+        description: "Information of the new Decklist"
+        required: true
+        schema:
+          $ref: "#/definitions/CreateDecklist"
+      responses:
+        201:
+          description: "Created succesfuly"
+          schema:
+            $ref: "#/definitions/Decklist"
+        422:
+          description: "Unprocessable entity"
+          schema:
+            $ref: "#/definitions/Error"
+    
+  /decklist/{deckName}:
+    get:
+      tags:
+      - "decklist"
+      summary: "Finds decklist by status"
+      description: ""
+      operationId: "findDeckByName"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "deckName"
+        in: "path"
+        description: "Name of the deck to find"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+              $ref: "#/definitions/Decklist"
+        404:
+          description: "Decklist not found"
+          schema:
+            $ref: "#/definitions/Error"
+    put:
+      tags:
+      - "decklist"
+      summary: "Adds new card to a deck"
+      description: ""
+      operationId: "addCards"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "deckName"
+        in: "path"
+        description: "Name of the deck to modify"
+        required: true
+        type: "string"
+      - name: "request"
+        in: "body"
+        description: "List of cards to add"
+        required: true
+        schema:
+          $ref: "#/definitions/AddCard"
+      responses:
+        200:
+          description: "Card added successfuly"
+          schema:
+            $ref: "#/definitions/Decklist"
+        422:
+          description: "Unprocessable entity"
+          schema:
+            $ref: "#/definitions/Error"
+    delete:
+      tags:
+      - "decklist"
+      summary: "Deletes an existing decklist"
+      description: ""
+      operationId: "deleteDecklist"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "deckName"
+        in: "path"
+        description: "Name of the deck to delete"
+        required: true
+        type: "string"
+      responses:
+        204:
+          description: "Decklist successfuly removed"
+        404:
+          description: "Decklist not found"
+          schema:
+            $ref: "#/definitions/Error"
+    
+  /decklist/{deckName}/{cardName}:
+    delete:
+      tags:
+      - "decklist"
+      summary: "Deletes a card to a deck"
+      description: ""
+      operationId: "deleteCards"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "deckName"
+        in: "path"
+        description: "Name of the deck to modify"
+        required: true
+        type: "string"
+      - name: "cardName"
+        in: "path"
+        description: "Name of the card to delete"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Card deleted successfuly"
+          schema:
+            $ref: "#/definitions/Decklist"
+        404:
+          description: "Decklist not found"
+          schema:
+            $ref: "#/definitions/Error"
+definitions:
+
+  cardsArray:
+    type: "object"
+    properties:
+      name:
+         type: "string"
+         example: "Ghostrick lantern"
+      amount:
+        type: "integer"
+        format: "int64"
+        example: 3
+    xml:
+      name: "Tag"
+  Cards:
+    type: "array"
+    xml:
+      name: "cards"
+      wrapped: true
+    items:
+      $ref: "#/definitions/cardsArray"
+  DataCreateDecklist:
+    type: "object"
+    required:
+    - "name"
+    - "cards"
+    properties:
+      name:
+        type: "string"
+        example: "Ghostrick"
+      cards:
+        $ref: "#/definitions/Cards"
+  DataDecklist:
+    type: "object"
+    required:
+    - "name"
+    - "cards"
+    properties:
+      name:
+        type: "string"
+        example: "Ghostrick"
+      cards:
+        $ref: "#/definitions/Cards"
+      Size:
+        type: "integer"
+        format: "int64"
+        example: 3
+      Legality:
+        type: "boolean"
+        example: false
+  CreateDecklist:
+    type: "object"
+    required:
+    - "data"
+    properties:
+      data:
+        $ref: "#/definitions/DataCreateDecklist"
+    xml:
+      name: "Decklist"
+  Decklist:
+    type: "object"
+    required:
+    - "data"
+    properties:
+      data:
+        $ref: "#/definitions/DataDecklist"
+    xml:
+      name: "Decklist"
+  DataDeleteDecklist:
+    type: "object"
+    required:
+    - "name"
+    properties:
+      name:
+        type: "string"
+        example: "Ghostrick"
+  DeleteDecklist:
+    type: "object"
+    required:
+    - "data"
+    properties:
+      data:
+        $ref: "#/definitions/DataDeleteDecklist"
+    xml:
+      name: "DeleteDecklist"
+  DataAddCard:
+    type: "array"
+    xml:
+      name: "cards"
+      wrapped: true
+    items:
+      $ref: "#/definitions/cardsArray"
+  AddCard:
+    type: "object"
+    required:
+    - "data"
+    properties:
+      data:
+        $ref: "#/definitions/DataAddCard"
+    xml:
+      name: "AddCard"
+  DataDeleteCard:
+    type: "object"
+    required:
+    - "card"
+    properties:
+      name:
+        type: "string"
+        example: "Ghostrick lantern"
+  DeleteCard:
+    type: "object"
+    required:
+    - "data"
+    properties:
+      data:
+        $ref: "#/definitions/DataDeleteCard"
+    xml:
+      name: "DeleteCard"
+  ErrorData:
+    type: "object"
+    required:
+    - "code"
+    - "description"
+    properties:
+      code:
+        type: "integer"
+        format: "int64"
+        example: 422
+      description:
+        type: "string"
+        example: "Deck name already taken"
+    xml:
+      name: "Decklist"
+  Error:
+    type: "object"
+    required:
+    - "error"
+    properties:
+      error:
+        $ref: "#/definitions/ErrorData"
+    xml:
+      name: "Decklist"
+
+  Unavailable:
+    type: "object"
+    required:
+    - "code"
+    - "title"
+    - "description"
+    properties:
+      code:
+        type: integer
+        example: 503
+      title:
+        type: "string"
+        example: "Service Unavailable"
+      description:
+        type: "string"
+        example: "Server has failed"
+  ServiceUnavailable:
+    type: "object"
+    required:
+    - "error"
+    properties:
+      error:
+        $ref: "#/definitions/Unavailable"
+    xml:
+      name: "resetPass"
+  DataCreateUser:
+    type: "object"
+    required:
+    - "name"
+    - "email"
+    - "password"
+    properties:
+      name:
+        type: "string"
+        example: "Emma"
+      email:
+        type: "string"
+        example: "emmanuel@gmail.com"
+      password:
+        type: "string"
+        example: "password"
+  DataCreateUserSuccesfully:
+    type: "object"
+    required:
+    - "name"
+    - "email"
+   
+    properties:
+      name:
+        type: "string"
+        example: "Emma"
+      email:
+        type: "string"
+        example: "emmanuel@gmail.com"
+    
+ 
+  CreateUser:
+    type: "object"
+    required:
+    - "data"
+    properties:
+      data:
+        $ref: "#/definitions/DataCreateUser"
+    xml:
+      name: "CreateUser"
+  DataLogin:
+    type: "object"
+    required:
+    - "password"
+    - "email"
+    properties:
+      password:
+        type: "string"
+        example: "Emma"
+      email:
+        type: "string"
+        example: "emmanuel@gmail.com"
+  Login:
+    type: "object"
+    required:
+    - "data"
+    properties:
+      data:
+        $ref: "#/definitions/DataLogin"
+    xml:
+      name: "Login"
+  DataLogout:
+    type: "object"
+  
+  Logout:
+    type: "object"
+    required:
+    - "data"
+    properties:
+      data:
+        $ref: "#/definitions/DataLogout"
+    xml:
+      name: "Login"
+  DataReset:
+    type: "object"
+    required:
+    - "email"
+   
+    properties:
+
+      email:
+        type: "string"
+        example: "emmanuel@gmail.com"
+  DataReset1:
+    type: "object"
+    required:
+    - "email"
+    - "token"
+    - "password"
+    properties:
+      
+      email:
+        type: "string"
+        example: "emmanuel@gmail.com"
+      token:
+        type: "string"
+        example: "12njkd"
+      password:
+        type: "string"
+        example: "emma117"
+  Reset:
+    type: "object"
+    required:
+    - "data"
+    properties:
+      data:
+        $ref: "#/definitions/DataReset"
+    xml:
+      name: "Login"
+  Reset1:
+    type: "object"
+    required:
+    - "data"
+    properties:
+      data:
+        $ref: "#/definitions/DataReset1"
+    xml:
+      name: "ResetNewPassword"
+  ErrorData2:
+    type: "object"
+    required:
+    - "code"
+    - "title"
+
+    properties:
+      code:
+        type: "integer"
+        format: "int64"
+        example: 422
+      title:
+        type: "string"
+        example: "Unprocessable Entity" 
+
+    xml:
+      name: "CreateUser"
+  Error2:
+    type: "object"
+    required:
+    - "error"
+    properties:
+      error:
+        $ref: "#/definitions/ErrorData2"
+    xml:
+      name: "CreateUser"
+  ErrorData1:
+    type: "object"
+    required:
+    - "code"
+    - "title"
+    properties:
+      code:
+        type: "integer"
+        format: "int64"
+        example: 401
+      title:
+        type: "string"
+        example: "Unauthorized" 
+
+    xml:
+      name: "CreateUser"
+  Error1:
+    type: "object"
+    required:
+    - "error"
+    properties:
+      error:
+        $ref: "#/definitions/ErrorData1"
+    xml:
+      name: "CreateUser"
+externalDocs:
+  description: "Find out more about Swagger"
+  url: "http://swagger.io"
+
+
+
