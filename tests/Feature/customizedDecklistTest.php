@@ -58,45 +58,4 @@ class customizedDecklistTest extends TestCase
       $response->assertStatus(204);
 
   }
-/*
-  public function test_addCard()
-  {
-      $deckListData = [
-                    "data"=> ["name"=> "Ghostrick",
-                              "cards"=>[]
-                              ]
-                    ];
-
-      $this->json('POST', 'api/v1/decklist/', $deckListData);
-
-      $cards = [
-                      "data"=> ["cards"=>[[
-                                    "name"=> "Ghostrick lantern",
-                                    "amount"=> 3
-                                  ],[
-                                    "name"=> "Ghostrick ghoul",
-                                    "amount"=> 3
-                                  ]]
-                                ]
-                      ];
-
-      $response = $this->json('POST', 'api/v1/decklist/Ghostrick', $cards);
-
-      $response->assertStatus(200);
-      $response->assertJsonFragment([
-          'name' => 'Ghostrick',
-          "name"=> "Ghostrick lantern",
-          "amount"=> 3
-      ]);
-
-      $deckListData = [
-                      "data"=> ["name"=> "Ghostrick"
-                                ]
-                      ];
-
-      $this->json('DELETE', 'api/v1/decklist/', $deckListData);
-
-
-  }
-  */
 }
