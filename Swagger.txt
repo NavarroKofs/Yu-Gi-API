@@ -1,6 +1,6 @@
 swagger: "2.0"
 info:
-  description: "Yu-Gi-Api! es una interfaz de programación de aplicaciones qu busca ayudar a las personas que necesiten comprar o vender cartas del juego de cartas coleccionables Yu-Gi-Oh! mediante una lista de precios actuales de dichas cartas en el mercado así como un gestor de cartas y otras funcionalidades."
+  description: "Yu-Gi-Api! es una interfaz de programaciï¿½n de aplicaciones qu busca ayudar a las personas que necesiten comprar o vender cartas del juego de cartas coleccionables Yu-Gi-Oh! mediante una lista de precios actuales de dichas cartas en el mercado asï¿½ como un gestor de cartas y otras funcionalidades."
   version: "1.0.0"
   title: "Yu-Gi-API!"
   termsOfService: "http://swagger.io/terms/"
@@ -13,7 +13,7 @@ host: "yu-gi-api.herokuapp.com"
 basePath: "/v1"
 tags:
 - name: "Yu-Gi-API!"
-  description: "El mundo de Yu-Gi-Oh! en una sola aplicación"
+  description: "El mundo de Yu-Gi-Oh! en una sola aplicaciï¿½n"
   externalDocs:
     description: "Find out more"
     url: "https://github.com/NavarroKofs/Yu-Gi-API"
@@ -257,7 +257,7 @@ paths:
         404:
           description: "WishList not found"
           schema:
-            $ref: "#/definitions/Error"        
+            $ref: "#/definitions/Error"
   /wishlist/tPrice/{id}:
     get:
       tags:
@@ -283,7 +283,7 @@ paths:
           schema:
             $ref: "#/definitions/Error"
   /wishlist/fCard/{id}/{name}:
-    get:  
+    get:
       tags:
       - "WishList"
       summary: "Get a card inside of a WishList, by id"
@@ -310,9 +310,9 @@ paths:
         404:
           description: "WishList not found"
           schema:
-            $ref: "#/definitions/Error"  
+            $ref: "#/definitions/Error"
   /v1/wishlist/rCard/{id}/{name}:
-    delete:  
+    delete:
       tags:
       - "WishList"
       summary: "Delete a card inside of a WishList, by id"
@@ -339,7 +339,7 @@ paths:
         404:
           description: "WishList not found"
           schema:
-            $ref: "#/definitions/Error" 
+            $ref: "#/definitions/Error"
   /cards:
     get:
       tags:
@@ -714,7 +714,7 @@ definitions:
       next_page_url:
         type: "string"
         example: "https://yu-gi-api.herokuapp.com/v1/cartas?page=2"
-      path: 
+      path:
         type: "string"
         example:  "https://yu-gi-api.herokuapp.com/v1/cartas"
       per_page:
@@ -738,16 +738,16 @@ definitions:
       name:
         type: "string"
         example: "\"A\" Cell Breeding Device"
-      type: 
+      type:
         type: "string"
         example: "Spell Card"
-      desc: 
+      desc:
         type: "string"
         example: "During each of your Standby Phases, put 1 A-Counter on 1 face-up monster your opponent controls."
-      race: 
+      race:
         type: "string"
         example: "Continuous"
-      archetype: 
+      archetype:
         type: "string"
         example: "Alien"
       card_Sets:
@@ -892,7 +892,7 @@ definitions:
       next_page_url:
         type: "string"
         example: "https://yu-gi-api.herokuapp.com/v1/banlist/TCG?page=2"
-      path: 
+      path:
         type: "string"
         example:  "https://yu-gi-api.herokuapp.com/v1/banlist/TCG"
       per_page:
@@ -916,16 +916,16 @@ definitions:
       name:
         type: "string"
         example: "A Hero Lives"
-      type: 
+      type:
         type: "string"
         example: "Spell Card"
-      desc: 
+      desc:
         type: "string"
         example: "If you control no face-up monsters: Pay half your LP; Special Summon 1 Level 4 or lower \"Elemental HERO\" monster from your Deck."
-      race: 
+      race:
         type: "string"
         example: "Normal"
-      archetype: 
+      archetype:
         type: "string"
         example: "Elemental HERO"
       card_Sets:
