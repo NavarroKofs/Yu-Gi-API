@@ -1,15 +1,12 @@
 swagger: "2.0"
 info:
-  description: "This is a sample server Petstore server.  You can find out more about     Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).      For this sample, you can use the api key `special-key` to test the authorization     filters."
+  description: "This is an API targeted to help yu-gi-oh duelist to organize their decklists and wishlists in order to know the legality of their decks and an aproximate of their wishlists cost.\n The api also provides some other services like searching for a specific card o cards of the same archetype."
   version: "1.0.0"
   title: "Yu-Gi-API"
-  termsOfService: "#"
-  contact:
-    email: "apiteam@swagger.io"
   license:
-    name: "Apache 2.0"
-    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
-host: "petstore.swagger.io"
+    name: "Powered by Laravel"
+    url: "https://laravel.com"
+host: "yu-gi-api.herokuapp.com"
 basePath: "/v1"
 tags:
 - name: "decklist"
@@ -198,31 +195,8 @@ paths:
           description: "Unprocessable entity"
           schema:
             $ref: "#/definitions/Error"
-    delete:
-      tags:
-      - "decklist"
-      summary: "Deletes an existing decklist"
-      description: ""
-      operationId: "deleteDecklist"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "request"
-        description: "Name of the decklist to delete"
-        required: true
-        schema:
-          $ref: "#/definitions/DeleteDecklist"
-      responses:
-        204:
-          description: "Decklist successfuly removed"
-        404:
-          description: "Decklist not found"
-          schema:
-            $ref: "#/definitions/Error"
-  /decklist/{name}:
+    
+  /decklist/{deckName}:
     get:
       tags:
       - "decklist"
@@ -232,7 +206,7 @@ paths:
       produces:
       - "application/json"
       parameters:
-      - name: "name"
+      - name: "deckName"
         in: "path"
         description: "Name of the deck to find"
         required: true
@@ -246,7 +220,7 @@ paths:
           description: "Decklist not found"
           schema:
             $ref: "#/definitions/Error"
-    post:
+    put:
       tags:
       - "decklist"
       summary: "Adds new card to a deck"
@@ -255,7 +229,7 @@ paths:
       produces:
       - "application/json"
       parameters:
-      - name: "name"
+      - name: "deckName"
         in: "path"
         description: "Name of the deck to modify"
         required: true
@@ -278,23 +252,45 @@ paths:
     delete:
       tags:
       - "decklist"
+      summary: "Deletes an existing decklist"
+      description: ""
+      operationId: "deleteDecklist"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "deckName"
+        in: "path"
+        description: "Name of the deck to delete"
+        required: true
+        type: "string"
+      responses:
+        204:
+          description: "Decklist successfuly removed"
+        404:
+          description: "Decklist not found"
+          schema:
+            $ref: "#/definitions/Error"
+    
+  /decklist/{deckName}/{cardName}:
+    delete:
+      tags:
+      - "decklist"
       summary: "Deletes a card to a deck"
       description: ""
       operationId: "deleteCards"
       produces:
       - "application/json"
       parameters:
-      - name: "name"
+      - name: "deckName"
         in: "path"
         description: "Name of the deck to modify"
         required: true
         type: "string"
-      - name: "request"
-        in: "body"
+      - name: "cardName"
+        in: "path"
         description: "Name of the card to delete"
         required: true
-        schema:
-          $ref: "#/definitions/DeleteCard"
+        type: "string"
       responses:
         200:
           description: "Card deleted successfuly"
