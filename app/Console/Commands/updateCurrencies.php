@@ -41,16 +41,15 @@ class updateCurrencies extends Command
     public function handle()
     {
         $currencyLink = "https://frankfurter.app/latest?amount=1&from=USD&to=MXN";
-        $client = new \GuzzleHttp\Client();
-        $response = $client->request('GET', $currencyLink);
-        if($response->getStatusCode() != '200'){
+        $currencyInfo = self::getContent($currencyLink);
+        if($currencyInfo->getStatusCode() != '200'){
             return response()->json([
                 "errors"=> ["code"=> "ERROR-6",
                 "title"=>  "Unavailable Service",
                 "description"=> 'The server does not respond. Try later.'
                 ]]  , 503);
         }
-        $value = json_decode($cardInfo->getBody(), true);
+        $value = json_decode($currencyInfo->getBody(), true);
         $mexicanPesos = $value['rates']['MXN'];
         $currency = Currency::find(1);
         if ($currency === null) {
@@ -59,6 +58,16 @@ class updateCurrencies extends Command
             $currency->valor = $mexicanPesos;
             $currency->moneda = 'MXN';
             $currency->save();
+        }
+    }
+
+    public function getContent($currencyLink){
+        try{
+            $client = new \GuzzleHttp\Client();
+            $response = $client->request('GET', $currencyLink);
+            return $response;
+        }catch(\GuzzleHttp\Exception\RequestException $e){
+            return $e->getResponse();
         }
     }
 }
