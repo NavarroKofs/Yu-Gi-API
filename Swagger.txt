@@ -178,7 +178,7 @@ paths:
           description: "Created succesfuly"
           schema:
             $ref: "#/definitions/WishList"
-        423:
+        422:
           description: "Unprocessable entity"
           schema:
             $ref: "#/definitions/Error"
