@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Currency;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Validator;
 use PhpParser\Node\Expr\Print_;
 
 class updateCurrencies extends Command
@@ -39,18 +40,33 @@ class updateCurrencies extends Command
      */
     public function handle()
     {
-        $ruta_divisas = "https://frankfurter.app/latest?amount=1&from=USD&to=MXN";
-        $convertCurrency = file_get_contents($ruta_divisas);
-        $value = json_decode($convertCurrency, true);
-        $pesosMexicanos = $value['rates']['MXN'];
+        $currencyLink = "https://frankfurter.app/latest?amount=1&from=USD&to=MXN";
+        $currencyInfo = self::getContent($currencyLink);
+        if($currencyInfo->getStatusCode() != '200'){
+            return response()->json([
+                "errors"=> ["code"=> "ERROR-6",
+                "title"=>  "Unavailable Service",
+                "description"=> 'The server does not respond. Try later.'
+                ]]  , 503);
+        }
+        $value = json_decode($currencyInfo->getBody(), true);
+        $mexicanPesos = $value['rates']['MXN'];
         $currency = Currency::find(1);
         if ($currency === null) {
-            $currency = Currency::create(["moneda" => 'MXN', "valor" => $pesosMexicanos]);
+            $currency = Currency::create(["moneda" => 'MXN', "valor" => $mexicanPesos]);
         } else {
-            $currency->valor = $pesosMexicanos;
+            $currency->valor = $mexicanPesos;
             $currency->moneda = 'MXN';
             $currency->save();
-            echo("Actualizada");
         }
+    }
+
+    public function getContent($currencyLink){
+        try{
+            $client = new \GuzzleHttp\Client();
+            $response = $client->request('GET', $currencyLink);
+            return $response;
+        }catch(\GuzzleHttp\Exception\RequestException $e){
+            return $e->getResponse();
     }
 }
