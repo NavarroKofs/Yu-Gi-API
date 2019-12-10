@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Mail;
-
+use Illuminate\Support\Str;
     class ResetPasswordController extends Controller
     {
         /*
@@ -51,7 +51,7 @@ use Illuminate\Support\Facades\Mail;
         if($validacionCorreo){
         DB::table('password_resets')->insert([
         'email' => $email->email,
-        'token' => str_random(4),
+        'token' => Str::random(4)),
         'created_at' => Carbon::now()
     ]);
       
