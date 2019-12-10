@@ -51,7 +51,7 @@ use Illuminate\Support\Str;
         if($validacionCorreo){
         DB::table('password_resets')->insert([
         'email' => $email->email,
-        'token' => Str::random(4)),
+        'token' => Str::random(4),
         'created_at' => Carbon::now()
     ]);
       
