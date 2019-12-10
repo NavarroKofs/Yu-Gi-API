@@ -68,5 +68,6 @@ class updateCurrencies extends Command
             return $response;
         }catch(\GuzzleHttp\Exception\RequestException $e){
             return $e->getResponse();
+        }
     }
 }
