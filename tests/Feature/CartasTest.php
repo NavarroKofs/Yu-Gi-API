@@ -165,6 +165,34 @@ class CartasTest extends TestCase
             'level' => '1'
         ]);
     }
+    //     El cliente no introduce el valor de 'name' o 'fname'     //
+    /** @test */
+    public function test_server_does_not_find_the_card(){
+        //Given
+        $cardData = "123545485845";
+        // When
+        $response = $this->json('GET', "/api/v1/cards/$cardData"); 
+        // Then
+        // Assert it sends the correct HTTP Status
+        $response->assertStatus(404);
+        // Assert the response has the correct structure
+        $response->assertJsonStructure([
+            'errors' => [
+                'code',
+                'title',
+                'description'
+            ]
+        ]);
+        // Assert the card has
+        // the correct data
+        $response->assertJsonFragment([
+            'errors' => [
+                'code' => "ERROR-2",
+                'title' => "Not Found",
+                'description' => 'No card matching your query was found in the database.'
+            ]
+        ]);
+    }
     //     Search by content in the name      //
     /** @test */
     public function test_client_can_request_a_card_by_content()
@@ -190,34 +218,6 @@ class CartasTest extends TestCase
         $cardData = "?fname=123545485845";
         // When
         $response = $this->json('GET', "/api/v1/cards/search$cardData"); 
-        // Then
-        // Assert it sends the correct HTTP Status
-        $response->assertStatus(404);
-        // Assert the response has the correct structure
-        $response->assertJsonStructure([
-            'errors' => [
-                'code',
-                'title',
-                'description'
-            ]
-        ]);
-        // Assert the card has
-        // the correct data
-        $response->assertJsonFragment([
-            'errors' => [
-                'code' => "ERROR-2",
-                'title' => "Not Found",
-                'description' => 'No card matching your query was found in the database.'
-            ]
-        ]);
-    }
-    //     El cliente no introduce el valor de 'name' o 'fname'     //
-    /** @test */
-    public function test_server_does_not_find_the_card(){
-        //Given
-        $cardData = "123545485845";
-        // When
-        $response = $this->json('GET', "/api/v1/cards/$cardData"); 
         // Then
         // Assert it sends the correct HTTP Status
         $response->assertStatus(404);
@@ -363,6 +363,51 @@ class CartasTest extends TestCase
             "current_page", "data", "first_page_url",
             "from", "last_page",  "last_page_url", "next_page_url",
             "path", "per_page", "prev_page_url", "to", "total"
+        ]);
+    }
+    //     El cliente solicita todas las cartas de un set     //
+    /** @test */
+    public function test_client_can_request_banlist()
+    {
+        //Given
+        $cardData = "tcg";
+        // When
+        $response = $this->json('GET', "/api/v1/cards/banlist/$cardData"); 
+        // Then
+        // Assert it sends the correct HTTP Status
+        $response->assertStatus(200);
+        // Assert the response has the correct structure
+        $response->assertJsonStructure([
+            "current_page", "data", "first_page_url",
+            "from", "last_page",  "last_page_url", "next_page_url",
+            "path", "per_page", "prev_page_url", "to", "total"
+        ]);
+    }
+    public function test_client_can_request_an_unexistent_banlist()
+    {
+        //Given
+        $cardData = "noviembre";
+        // When
+        $response = $this->json('GET', "/api/v1/cards/banlist/$cardData"); 
+        // Then
+        // Assert it sends the correct HTTP Status
+        $response->assertStatus(422);
+        // Assert the response has the correct structure
+        $response->assertJsonStructure([
+            'errors' => [
+                'code',
+                'title',
+                'description'
+            ]
+        ]);
+        // Assert the card has
+        // the correct data
+        $response->assertJsonFragment([
+            'errors' => [
+                'code' => "ERROR-1",
+                'title' => "Unprocessable Entity",
+                'description' => 'you must enter the banlist "ocg", "tcg" or "goat"'
+            ]
         ]);
     }
 }
