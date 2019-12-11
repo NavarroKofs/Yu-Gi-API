@@ -106,7 +106,7 @@ class customizedDecklistTest extends TestCase
 
       $response->assertStatus(404);
       $response->assertJsonFragment([
-          "title"=>  "Decklist not found",,
+          "title"=>  "Decklist not found"
       ]);
 
 
