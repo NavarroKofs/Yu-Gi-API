@@ -17,13 +17,30 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::post('v1/wishlist/create',"customizedWishListController@newWishlist");
+Route::get('v1/wishlist/{id}',"CustomizedWishListController@getWishList");
+Route::get('v1/wishlist/tPrice/{id}','CustomizedWishListController@getTotalPrice');
+Route::get('v1/wishlist/fCard/{id}/{name}','CustomizedWishListController@findCard');
+Route::put('v1/wishlist/{id}','CustomizedWishListController@addCard');
+Route::delete('v1/wishlist/{id}','CustomizedWishListController@destroy');
+Route::delete('v1/wishlist/rCard/{id}/{name}','CustomizedWishListController@removeCard');
+
+
+//Search
+
+Route::get('v1/cards/search', 'cardsController@fuzzySearch');
+
+Route::get('v1/cards/{card_name}', 'cardsController@searchByName');
+
+Route::get('v1/cards/', 'cardsController@showAllCards');
+
+Route::get('v1/cards/banlist/{ruling_type}', 'cardsController@showBanlist');
+
+Route::get('v1/cards/set/{set_name}', 'cardsController@showAllCardsOfASet');
+
+Route::get('v1/cards/archetype/{archetype_name}', 'cardsController@showAllCardsOfAnArchetype');
+
 //decklist
-
-Route::get('v1/cartas/{nombre_carta}', 'cartasController@busqueda');
-
-Route::get('v1/cartas/', 'cartasController@show_all_cards');
-
-
 
 Route::post('v1/decklist/',"CustomizedDecklistController@store");
 
@@ -36,8 +53,13 @@ Route::delete('v1/decklist/{deckName}/{cardName}',"CustomizedDecklistController@
 Route::get('v1/decklist/{name}',"CustomizedDecklistController@viewDecklist");
 
 //Deckpersonalizado
+
 Route::post('v1/user', 'UserController@store');
+
 Route::post('v1/login', 'Auth\LoginController@login');
+
 Route::post('v1/logout', 'Auth\LoginController@logout');
+
 Route::post('v1/sendResetPass', 'Auth\ResetPasswordController@resetPassword');
+
 Route::post('v1/resetPass1', 'Auth\ResetPasswordController@resetPasswordComplete');
