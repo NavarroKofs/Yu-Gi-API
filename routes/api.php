@@ -20,12 +20,18 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 //wishlist
 Route::post('v1/wishlist/create',"customizedWishListController@newWishlist");
-Route::get('v1/wishlist/{id}',"CustomizedWishListController@getWishList");
-Route::get('v1/wishlist/tPrice/{id}','CustomizedWishListController@getTotalPrice');
-Route::get('v1/wishlist/fCard/{id}/{name}','CustomizedWishListController@findCard');
-Route::put('v1/wishlist/{id}','CustomizedWishListController@addCard');
-Route::delete('v1/wishlist/{id}','CustomizedWishListController@destroy');
-Route::delete('v1/wishlist/rCard/{id}/{name}','CustomizedWishListController@removeCard');
+
+Route::get('v1/wishlist/{id}',"customizedWishListController@getWishList");
+
+Route::get('v1/wishlist/tPrice/{id}','customizedWishListController@getTotalPrice');
+
+Route::get('v1/wishlist/fCard/{id}/{name}','customizedWishListController@findCard');
+
+Route::put('v1/wishlist/{id}','customizedWishListController@addCard');
+
+Route::delete('v1/wishlist/{id}','customizedWishListController@destroy');
+
+Route::delete('v1/wishlist/rCard/{id}/{name}','customizedWishListController@removeCard');
 
 
 //Search
