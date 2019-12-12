@@ -12,6 +12,7 @@ class customizedWishListTest extends TestCase
   /**
    * CREATE-1
    */
+    /** @test */
   public function test_create()
   {
       $WishListData = [
@@ -19,7 +20,7 @@ class customizedWishListTest extends TestCase
                                 'cards'=>["skull servant", "subterror guru"]
                                 ]
                       ];
-      $response = $this->json('POST', 'v1/wishlist/create', $WishListData);
+      $response = $this->json('POST', 'api/v1/wishlist/create', $WishListData);
       $response->assertStatus(201);
       $response->assertJsonFragment([
           'name' => 'WL1',
@@ -29,10 +30,11 @@ class customizedWishListTest extends TestCase
             ],
             "price" => 34.028781
       ]);
+      //$id =  json_encode($response->id);
       $this->assertDatabaseHas(
-          'customized_wish_list',
+          'customized_wish_lists',
           [
-              'name' => 'WL1'
+            'name' => "WL1",
           ]
       );
       $response = $this->json('DELETE', 'v1/wishlist/1');
@@ -40,6 +42,7 @@ class customizedWishListTest extends TestCase
   /**
    * DELETE-1
    */
+  /** @test */
   public function test_delete()
   {
     $WishListData = [
@@ -54,6 +57,7 @@ class customizedWishListTest extends TestCase
   /**
    * DELETE-2
    */
+  /** @test */
   public function test_delete_not_found()
   {
       $response = $this->json('DELETE', 'v1/wishlist/666');
@@ -65,6 +69,7 @@ class customizedWishListTest extends TestCase
   /**
   * PUT-1
   */
+  /** @test */
   public function test_addCard()
   {
       $WishListData = [
@@ -103,6 +108,7 @@ class customizedWishListTest extends TestCase
   /**
   * PUT-2
   */
+  /** @test */
   public function test_addCard_deck_not_found()
   {
     $cards = [
@@ -119,7 +125,7 @@ class customizedWishListTest extends TestCase
   /**
   *   Tottal Price-1
   **/
-
+    /** @test */
   public function test_total_price()
   {
       $WishListData = [
@@ -139,6 +145,7 @@ class customizedWishListTest extends TestCase
   /**
    * Tottal Price-2
    */
+  /** @test */
   public function test_total_price_not_found()
   {
       $response = $this->json('GET', 'v1/wishlist/tPrice/666');
@@ -151,6 +158,7 @@ class customizedWishListTest extends TestCase
   /**
   *   Remove-1
   **/
+  /** @test */
   public function test_removeCard()
   {   
       $WishListData = [
@@ -183,6 +191,7 @@ class customizedWishListTest extends TestCase
   /**
   *   Remove-2
   **/
+  /** @test */
   public function test_removeCard_deck_not_found()
   {
       $card = 'subterror guru';
@@ -195,6 +204,7 @@ class customizedWishListTest extends TestCase
   /**
   *   View-1
   **/
+  /** @test */
   public function test_viewDecklist()
   {
       $WishListData = [
@@ -210,6 +220,7 @@ class customizedWishListTest extends TestCase
   /**
   *   View-2
   **/
+  /** @test */
   public function test_viewDecklist_deck_not_found()
   {
       $response = $this->json('GET', 'api/v1/decklist/Ghostrick');
