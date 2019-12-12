@@ -184,6 +184,10 @@ class cardsController extends Controller
     }
 
     public function getPrice(){
-        return DB::table('currencies')->whereId(1)->first()->valor;
+        try{
+            return DB::table('currencies')->whereId(1)->first()->valor;
+        }catch(\Exception $e){
+            return "20";
+        }
     }
 }
