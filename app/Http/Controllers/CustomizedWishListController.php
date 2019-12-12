@@ -268,7 +268,11 @@ class customizedWishListController extends Controller
       $jsonPrice = $currentPrice['0']['card_prices']['amazon_price'];
       $totalPrice += $jsonPrice;
     }
-    $dollar = DB::table('currencies')->whereId(1)->first()->valor;
+    try{
+      $dollar = DB::table('currencies')->whereId(1)->first()->valor;
+    }catch(Exception $e){
+      $dollar = 20;
+    }
 	  $convertedPrice = ($dollar * $totalPrice);
     return $convertedPrice;
   }
