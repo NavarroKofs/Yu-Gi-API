@@ -17,6 +17,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+
+//wishlist
 Route::post('v1/wishlist/create',"customizedWishListController@newWishlist");
 Route::get('v1/wishlist/{id}',"CustomizedWishListController@getWishList");
 Route::get('v1/wishlist/tPrice/{id}','CustomizedWishListController@getTotalPrice');
