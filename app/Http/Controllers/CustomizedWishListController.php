@@ -19,10 +19,25 @@ class customizedWishListController extends Controller
   */
   public function newWishlist(Request $request)
   {
-    $name = $request->data['name'];
-    $cards = $request->data["cards"];
+    try{
+      $name = $request->data['name'];
+      $cards = $request->data["cards"];
+    }catch (\ErrorException $e) {
+      return response()->json([
+        "errors"=> ["code"=> "ERROR-1",
+        "title"=>  "Unprocessable Entity",
+        ]]  , 422);
+    }
+    $verified = self::verifyCard($cards);
+    if($verified != "ok"){
+      return response()->json([
+      "errors"=> ["code"=> "ERROR-2",
+      "title"=>  "Not Found",
+      "description"=> $verified
+      ]]  , 404);
+    }
     $totalPrice = self::calculatePrice($cards);
-  
+      
     $wishlist = customizedWishList::create([
                                         'name'=> $name,
                                         'cards'=> $cards,
@@ -91,19 +106,19 @@ class customizedWishListController extends Controller
    * @param  \App\customizedWishList  $customizedWishlist
    * @return \Illuminate\Http\Response
    */
-    public function destroy(Request $request, $id)
-    {
-        if (!(customizedWishList::find($id))) {
-          return response()->json([
-              "errors"=> ["ID"=> "ERR_DELETE-1",
-              "title"=>  "Wishlist not found",
-              "code"=>  "404",
-              ]]  , 404);
-        } else {
-            customizedWishList::destroy($id);
-            return response()->json($request,204);
-      }
+  public function destroy(Request $request, $id)
+  {
+      if (!(customizedWishList::find($id))) {
+        return response()->json([
+            "errors"=> ["ID"=> "ERR_DELETE-1",
+            "title"=>  "Wishlist not found",
+            "code"=>  "404",
+            ]]  , 404);
+      } else {
+          customizedWishList::destroy($id);
+          return response()->json($request,204);
     }
+  }
      /**
      * Update the specified resource in storage.
      *
@@ -111,59 +126,29 @@ class customizedWishListController extends Controller
      * @param   $name
      * @return \Illuminate\Http\Response
      */
-    public function removeCard(Request $request, $id, $name)
-    {
-        if (!(customizedWishList::find($id))) {
-        return response()->json([
-             "errors"=> ["ID"=> "REMOVE_CARD-1",
-             "title"=>  "Wishlist not found",
-             "code"=>  "404",
-             ]]  , 404);
-           }
-        $WishList = customizedWishList::find($id);
-        $cards = $WishList->cards;
-        for ($i=0; $i < count($cards) ; $i++) {
-          if($cards[$i]==$name){
-            array_splice($cards, $i, $i);
+  public function removeCard(Request $request, $id, $name)
+  {
+      if (!(customizedWishList::find($id))) {
+      return response()->json([
+            "errors"=> ["ID"=> "REMOVE_CARD-1",
+            "title"=>  "Wishlist not found",
+            "code"=>  "404",
+            ]]  , 404);
           }
+      $WishList = customizedWishList::find($id);
+      $cards = $WishList->cards;
+      for ($i=0; $i < count($cards) ; $i++) {
+        if($cards[$i]==$name){
+          array_splice($cards, $i, $i);
         }
-        $newPrice = self::calculatePrice($cards);
-        $WishList->cards = $cards;
-        $WishList->price = $newPrice;
-        $WishList->save();
-        
-        return response()->json($WishList,200);
-    }
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param   $name
-     * @return \Illuminate\Http\Response
-     */
-    public function addCard(Request $request, $id)
-    {
-        if (!(customizedWishList::find($id))) {
-        return response()->json([
-             "errors"=> ["ID"=> "REMOVE_CARD-1",
-             "title"=>  "Wishlist not found",
-             "code"=>  "404",
-             ]]  , 404);
-           }
-        $WishList = customizedWishList::find($id);
-        $cards = $WishList->cards;
-        $addCards = $request->cards;
-        
-        for ($i=0; $i < count($addCards) ; $i++) {
-          array_push($cards,$addCards[$i]);
-        }
-        $newPrice = self::calculatePrice($cards);
-        $WishList->cards = $cards;
-        $WishList->price = $newPrice;
-        $WishList->save();
+      }
+      $newPrice = self::calculatePrice($cards);
+      $WishList->cards = $cards;
+      $WishList->price = $newPrice;
+      $WishList->save();
       
-        return response()->json($WishList,200);
-    }
+      return response()->json($WishList,200);
+  }
     /**
      * Update the specified resource in storage.
      *
@@ -171,38 +156,85 @@ class customizedWishListController extends Controller
      * @param   $name
      * @return \Illuminate\Http\Response
      */
-    public function findCard(Request $request, $id, $name)
-    {
-        if (!(customizedWishList::find($id))) {
-        return response()->json([
-             "errors"=> ["ID"=> "REMOVE_CARD-1",
-             "title"=>  "Wishlist not found",
-             "code"=>  "404",
-             ]]  , 404);
-           }
-
-        $name = strtolower ($name);
-        $cardFound=null;
-        $WishList = customizedWishList::find($id);
-        $cards = $WishList->cards;
-        for ($i=0; $i < count($cards) ; $i++) {
-          if(strtolower ($cards[$i])==$name){
-            $cardFound=$cards[$i];
-          }
-        }
-        
-        if (is_null($cardFound)) {
-          return response()->json([
-               "errors"=> ["ID"=> "REMOVE_CARD-1",
-               "title"=>  "Card not found",
-               "code"=>  "404",
-               ]]  , 404);
-             }
-        $path = "https://db.ygoprodeck.com/api/v5/cardinfo.php?&fname=$cardFound";
-        $cardResponse = self::getContent($path);
-        $response = json_decode($cardResponse->getBody());
-        return $response;
+  public function addCard(Request $request, $id)
+  {
+    if (!(customizedWishList::find($id))) {
+    return response()->json([
+          "errors"=> ["ID"=> "REMOVE_CARD-1",
+          "title"=>  "Wishlist not found",
+          "code"=>  "404",
+          ]]  , 404);
+        } 
+    $WishList = customizedWishList::find($id);
+   
+    $cards = $WishList->cards;
+    $addCards = $request->cards;
+    
+    if($addCards=="" || !is_array($addCards)){
+      return response()->json([
+        "errors"=> ["code"=> "ERROR-1",
+        "title"=>  "Unprocessable Entity",
+        ]]  , 422);
     }
+
+    $verified = self::verifyCard($addCards);
+    if($verified != "ok"){
+      return response()->json([
+      "errors"=> ["code"=> "ERROR-2",
+      "title"=>  "Not Found",
+      "description"=> $verified
+      ]]  , 404);
+    }
+
+    for ($i=0; $i < count($addCards) ; $i++) {
+      array_push($cards,$addCards[$i]);
+    }
+    $newPrice = self::calculatePrice($cards);
+    $WishList->cards = $cards;
+    $WishList->price = $newPrice;
+    $WishList->save();
+  
+    return response()->json($WishList,200);
+  }
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param   $name
+     * @return \Illuminate\Http\Response
+     */
+  public function findCard(Request $request, $id, $name)
+  {
+      if (!(customizedWishList::find($id))) {
+      return response()->json([
+            "errors"=> ["ID"=> "REMOVE_CARD-1",
+            "title"=>  "Wishlist not found",
+            "code"=>  "404",
+            ]]  , 404);
+          }
+
+      $name = strtolower ($name);
+      $cardFound=null;
+      $WishList = customizedWishList::find($id);
+      $cards = $WishList->cards;
+      for ($i=0; $i < count($cards) ; $i++) {
+        if(strtolower ($cards[$i])==$name){
+          $cardFound=$cards[$i];
+        }
+      }
+      
+      if (is_null($cardFound)) {
+        return response()->json([
+              "errors"=> ["ID"=> "REMOVE_CARD-1",
+              "title"=>  "Card not found",
+              "code"=>  "404",
+              ]]  , 404);
+            }
+      $path = "https://db.ygoprodeck.com/api/v5/cardinfo.php?&fname=$cardFound";
+      $cardResponse = self::getContent($path);
+      $response = json_decode($cardResponse->getBody());
+      return $response;
+  }
 	
 	public function pagination($newCollection, $offset, $page ,$perPage){
 		// Set custom pagination to result set
@@ -240,4 +272,19 @@ class customizedWishListController extends Controller
 	  $convertedPrice = ($dollar * $totalPrice);
     return $convertedPrice;
   }
+
+  public function verifyCard($cards){
+      try{
+        for ($i=0; $i < count($cards) ; $i++) {
+        $cardName = $cards[$i];
+        $path = "https://db.ygoprodeck.com/api/v5/cardinfo.php?fname=".$cardName;
+        $client = new \GuzzleHttp\Client();
+        $response = $client->request('GET', $path);
+        }
+      }catch(\GuzzleHttp\Exception\RequestException $e){
+        return "$cardName Card not found";
+      }
+      return "ok";
+    }
+  
 }
