@@ -8,11 +8,13 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class customizedDecklistTest extends TestCase
 {
+  use RefreshDatabase;
   /**
    * CREATE-1
    */
   public function test_create()
   {
+      $response = $this->json('DELETE', 'api/v1/decklist/Ghostrick');
       $deckListData = [
                       "data"=> ["name"=> "Ghostrick",
                                 "cards"=>[[
