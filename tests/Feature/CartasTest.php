@@ -83,7 +83,7 @@ class CartasTest extends TestCase
         $response->assertJsonFragment([
             'name' => 'Pendulumucho',
             'type' => 'Pendulum Effect Monster',
-            'scale' => '0',
+            'scale' => 0,
         ]);
     }
     //     Search link card     //
@@ -110,7 +110,7 @@ class CartasTest extends TestCase
         $response->assertJsonFragment([
             'name' => 'Decode Talker',
             'type' => 'Link Monster',
-            'linkval' => '3'
+            'linkval' => 3
         ]);
     }
     //     Search xyz card     //
@@ -137,7 +137,7 @@ class CartasTest extends TestCase
         $response->assertJsonFragment([
             'name' => 'Gagaga Cowboy',
             'type' => 'XYZ Monster',
-            'level' => '4',
+            'level' => 4,
         ]);
     }
     //     Search by card name     //
@@ -162,7 +162,7 @@ class CartasTest extends TestCase
         $response->assertJsonFragment([
             'name' => 'Skull Servant',
             'type' => 'Normal Monster',
-            'level' => '1'
+            'level' => 1
         ]);
     }
     //     El cliente no introduce el valor de 'name' o 'fname'     //
@@ -354,7 +354,7 @@ class CartasTest extends TestCase
         //Given
         $cardData = "Blue-Eyes";
         // When
-        $response = $this->json('GET', "/api/v1/cards/set/$cardData"); 
+        $response = $this->json('GET', "/api/v1/cards/archetype/$cardData"); 
         // Then
         // Assert it sends the correct HTTP Status
         $response->assertStatus(200);
