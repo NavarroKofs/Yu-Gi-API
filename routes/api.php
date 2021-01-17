@@ -62,6 +62,16 @@ Route::get('v1/decklist/{name}',"CustomizedDecklistController@viewDecklist");
 
 //Deckpersonalizado
 
+Route::post('v1/customizedCard', "customizedCardsController@store");
+
+Route::get('v1/customizedCard', "customizedCardsController@showCards");
+
+Route::delete('v1/customizedCard', "customizedCardsController@removeCard");
+
+Route::put('v1/customizedCard', "customizedCardsController@updateCard");
+
+//user
+
 Route::post('v1/user', 'UserController@store');
 
 Route::post('v1/login', 'Auth\LoginController@login');
