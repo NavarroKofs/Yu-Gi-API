@@ -17,6 +17,8 @@ class customizedCardsController extends Controller
      */
     public function store(Request $request){
         try {
+            $email = $request->data['email'];
+            $name = $request->data['name'];
             $validador = customizedCards::select('*')->where('email', $email)->where('name', $name)->get();
             if ($validador->count() > 0) {
                 $response = [
@@ -38,8 +40,6 @@ class customizedCardsController extends Controller
         }
 
         try {
-            $email = $request->data['email'];
-            $name = $request->data['name'];
             $stars = $request->data['stars'];
             $monsterType = $request->data['monster-type'];
             $attr = $request->data['attr'];
@@ -116,11 +116,21 @@ class customizedCardsController extends Controller
      */
     public function removeCard(Request $request)
     {
-        $email = $request->data['email'];
-        $name = $request->data['name'];
+        try {
+            $email = $request->data['email'];
+            $name = $request->data['name'];
+        } catch (\Throwable $th) {
+            return response()->json([
+                "errors"=> [
+                    "ID"=> "ERROR-1",
+                    "title"=>  "Unprocessable Entity",
+                    "code" => "422"
+                ]
+            ], 422);
+        }
         try {
             customizedCards::select('*')->where('email', $email)->where('name', $name)->delete();
-            return getCustomizedCardList($email);
+            return self::getCustomizedCardList($email);
         } catch (\Throwable $th) {
             return response()->json([
                 "errors"=> [
@@ -141,8 +151,8 @@ class customizedCardsController extends Controller
      */
     public function updateCard(Request $request)
     {
-        $email = $request->data['email'];
         try {
+            $email = $request->data['email'];
             $name = $request->data['name'];
             $stars = $request->data['stars'];
             $monsterType = $request->data['monster-type'];
