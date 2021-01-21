@@ -16,41 +16,41 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
-
-Route::post('v1/wishlist/create',"CustomizedWishListController@newWishlist");
-Route::get('v1/wishlist/',"CustomizedWishListController@getWishList");
-Route::get('v1/wishlist/{name}','CustomizedWishListController@findCard');
-Route::get('v1/wishlist/tPrice/{name}','CustomizedWishListController@getTotalPrice');
-Route::put('v1/wishlist/{name}','CustomizedWishListController@addCard');
-Route::delete('v1/wishlist/','CustomizedWishListController@destroy');
-Route::delete('v1/wishlist/{name}','CustomizedWishListController@removeCard');
+Auth::routes();
+Route::post('v1/wishlist/create',"CustomizedWishListController@newWishlist")->middleware('auth');
+Route::get('v1/wishlist/',"CustomizedWishListController@getWishList")->middleware('auth');
+Route::get('v1/wishlist/{name}','CustomizedWishListController@findCard')->middleware('auth');
+Route::get('v1/wishlist/tPrice/{name}','CustomizedWishListController@getTotalPrice')->middleware('auth');
+Route::put('v1/wishlist/{name}','CustomizedWishListController@addCard')->middleware('auth');
+Route::delete('v1/wishlist/','CustomizedWishListController@destroy')->middleware('auth');
+Route::delete('v1/wishlist/{name}','CustomizedWishListController@removeCard')->middleware('auth');
 
 
 //Search
 
-Route::get('v1/cards/search', 'cardsController@fuzzySearch');
+Route::get('v1/cards/search', 'cardsController@fuzzySearch')->middleware('auth');
 
-Route::get('v1/cards/{card_name}', 'cardsController@searchByName');
+Route::get('v1/cards/{card_name}', 'cardsController@searchByName')->middleware('auth');
 
-Route::get('v1/cards/', 'cardsController@showAllCards');
+Route::get('v1/cards/', 'cardsController@showAllCards')->middleware('auth');
 
-Route::get('v1/cards/banlist/{ruling_type}', 'cardsController@showBanlist');
+Route::get('v1/cards/banlist/{ruling_type}', 'cardsController@showBanlist')->middleware('auth');
 
-Route::get('v1/cards/set/{set_name}', 'cardsController@showAllCardsOfASet');
+Route::get('v1/cards/set/{set_name}', 'cardsController@showAllCardsOfASet')->middleware('auth');
 
-Route::get('v1/cards/archetype/{archetype_name}', 'cardsController@showAllCardsOfAnArchetype');
+Route::get('v1/cards/archetype/{archetype_name}', 'cardsController@showAllCardsOfAnArchetype')->middleware('auth');
 
 //decklist
 
-Route::post('v1/decklist/',"CustomizedDecklistController@store");
+Route::post('v1/decklist/',"CustomizedDecklistController@store")->middleware('auth');
 
-Route::delete('v1/decklist/{deckName}',"CustomizedDecklistController@destroy");
+Route::delete('v1/decklist/{deckName}',"CustomizedDecklistController@destroy")->middleware('auth');
 
-Route::put('v1/decklist/{deckName}/',"CustomizedDecklistController@addCard");
+Route::put('v1/decklist/{deckName}/',"CustomizedDecklistController@addCard")->middleware('auth');
 
-Route::delete('v1/decklist/{deckName}/{cardName}',"CustomizedDecklistController@removeCard");
+Route::delete('v1/decklist/{deckName}/{cardName}',"CustomizedDecklistController@removeCard")->middleware('auth');
 
-Route::get('v1/decklist/{name}',"CustomizedDecklistController@viewDecklist");
+Route::get('v1/decklist/{name}',"CustomizedDecklistController@viewDecklist")->middleware('auth');
 
 //Deckpersonalizado
 
