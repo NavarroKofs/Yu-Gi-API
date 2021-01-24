@@ -17,14 +17,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 Auth::routes();
-Route::post('v1/wishlist/create',"CustomizedWishListController@newWishlist")->middleware('auth');
-Route::get('v1/wishlist/',"CustomizedWishListController@getWishList")->middleware('auth');
-Route::get('v1/wishlist/{name}','CustomizedWishListController@findCard')->middleware('auth');
-Route::get('v1/wishlist/tPrice/{name}','CustomizedWishListController@getTotalPrice')->middleware('auth');
-Route::put('v1/wishlist/{name}','CustomizedWishListController@addCard')->middleware('auth');
-Route::delete('v1/wishlist/','CustomizedWishListController@destroy')->middleware('auth');
-Route::delete('v1/wishlist/{name}','CustomizedWishListController@removeCard')->middleware('auth');
-
 
 //wishlist
 Route::post('v1/wishlist/create',"customizedWishListController@newWishlist")->middleware('auth');
