@@ -71,4 +71,3 @@ class updateCurrencies extends Command
         }
     }
 }
-}
