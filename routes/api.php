@@ -26,6 +26,22 @@ Route::delete('v1/wishlist/','CustomizedWishListController@destroy')->middleware
 Route::delete('v1/wishlist/{name}','CustomizedWishListController@removeCard')->middleware('auth');
 
 
+//wishlist
+Route::post('v1/wishlist/create',"customizedWishListController@newWishlist")->middleware('auth');
+
+Route::get('v1/wishlist/{id}',"customizedWishListController@getWishList")->middleware('auth');
+
+Route::get('v1/wishlist/tPrice/{id}','customizedWishListController@getTotalPrice')->middleware('auth');
+
+Route::get('v1/wishlist/fCard/{id}/{name}','customizedWishListController@findCard')->middleware('auth');
+
+Route::put('v1/wishlist/{id}','customizedWishListController@addCard')->middleware('auth');
+
+Route::delete('v1/wishlist/{id}','customizedWishListController@destroy')->middleware('auth');
+
+Route::delete('v1/wishlist/rCard/{id}/{name}','customizedWishListController@removeCard')->middleware('auth');
+
+
 //Search
 
 Route::get('v1/cards/search', 'cardsController@fuzzySearch')->middleware('auth');
@@ -53,6 +69,16 @@ Route::delete('v1/decklist/{deckName}/{cardName}',"CustomizedDecklistController@
 Route::get('v1/decklist/{name}',"CustomizedDecklistController@viewDecklist")->middleware('auth');
 
 //Deckpersonalizado
+
+Route::post('v1/customizedCard', "customizedCardsController@store")->middleware('auth');
+
+Route::get('v1/customizedCard', "customizedCardsController@showCards")->middleware('auth');
+
+Route::delete('v1/customizedCard', "customizedCardsController@removeCard")->middleware('auth');
+
+Route::put('v1/customizedCard', "customizedCardsController@updateCard")->middleware('auth');
+
+//user
 
 Route::post('v1/user', 'UserController@store');
 
