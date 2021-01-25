@@ -33,23 +33,16 @@ class LoginController extends Controller
   }
 
   
-  public function logout(){
-    $sesionCerrada = $this->middleware('auth');
-    if(!$sesionCerrada){
-
-        return response()->json([
-            
-        "errors"=> [
-            "code"=>"Error-1",
-
-            "title"=>"Unprocesable Entity",
-
-    ]], 401);
-    }else{
-
-    Auth::logout();
-    return response()->json( "Session closed",200);
-    }
+  public function logout(Request $request)
+  {
+      $user = Auth::guard('api')->user();
+  
+      if ($user) {
+          $user->api_token = null;
+          $user->save();
+      }
+  
+      return response()->json(['data' => 'User logged out.'], 200);
   }
  
 }
