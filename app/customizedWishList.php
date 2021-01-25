@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class customizedDecklist extends Model
+class customizedWishList extends Model
 {
   protected $casts = [
         'cards' => 'array'

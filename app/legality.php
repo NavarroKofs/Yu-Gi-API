@@ -17,7 +17,7 @@ class legality
       $legalAmount;
       $cardsInDeck+=$cards[$i]["amount"];
       $cardName = str_replace(" ", "%20",$cards[$i]["name"]);
-      $route = "https://db.ygoprodeck.com/api/v5/cardinfo.php?banlist=tcg&name=".$cardName;
+      $route = "https://db.ygoprodeck.com/api/v7/cardinfo.php?banlist=tcg&name=".$cardName;
 
       try {
         $banListJson = file_get_contents($route);

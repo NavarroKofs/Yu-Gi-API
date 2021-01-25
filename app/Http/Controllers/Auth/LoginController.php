@@ -16,8 +16,8 @@ class LoginController extends Controller
             'password' => 'required|string'
         ]);
   
-    
-  
+
+  /*
     if(Auth::attempt($credentials)){
         return response()->json($credentials, 200);
     }else{
@@ -29,7 +29,7 @@ class LoginController extends Controller
             "description"=>"Unauthorized",
             
     ]], 401);
-    }
+    }*/
   }
 
   
