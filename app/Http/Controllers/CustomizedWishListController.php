@@ -230,7 +230,7 @@ class customizedWishListController extends Controller
               "code"=>  "404",
               ]]  , 404);
             }
-      $path = "https://db.ygoprodeck.com/api/v5/cardinfo.php?&fname=$cardFound";
+      $path = "https://db.ygoprodeck.com/api/v7/cardinfo.php?&name=$cardFound";
       $cardResponse = self::getContent($path);
       $response = json_decode($cardResponse->getBody());
       return $response;
@@ -262,17 +262,13 @@ class customizedWishListController extends Controller
     $totalPrice = 0;
     for ($i=0; $i < count($cards) ; $i++) {
       $cardName = $cards[$i];
-      $path = "https://db.ygoprodeck.com/api/v5/cardinfo.php?fname=".$cardName;
+      $path = "https://db.ygoprodeck.com/api/v7/cardinfo.php?name=".$cardName;
       $getPrice = self::getContent($path);
       $currentPrice = json_decode($getPrice->getBody(),true);
-      $jsonPrice = $currentPrice['0']['card_prices']['amazon_price'];
+      $jsonPrice = $currentPrice['data']['0']['card_prices'][0]['amazon_price'];
       $totalPrice += $jsonPrice;
     }
-    try{
-      $dollar = DB::table('currencies')->whereId(1)->first()->valor;
-    }catch(Exception $e){
-      $dollar = 20;
-    }
+    $dollar = 20;
 	  $convertedPrice = ($dollar * $totalPrice);
     return $convertedPrice;
   }
@@ -281,14 +277,14 @@ class customizedWishListController extends Controller
       try{
         for ($i=0; $i < count($cards) ; $i++) {
         $cardName = $cards[$i];
-        $path = "https://db.ygoprodeck.com/api/v5/cardinfo.php?fname=".$cardName;
+        $path = "https://db.ygoprodeck.com/api/v7/cardinfo.php?name=".$cardName;
         $client = new \GuzzleHttp\Client();
         $response = $client->request('GET', $path);
         }
+        return "ok";
       }catch(\GuzzleHttp\Exception\RequestException $e){
         return "$cardName Card not found";
       }
-      return "ok";
     }
   
 }
