@@ -155,7 +155,7 @@ paths:
           description: "Decklist not found"
           schema:
             $ref: "#/definitions/Error"
-  /wishlist:
+  /wishlist/create:
     post:
       tags:
       - "WishList"
@@ -178,10 +178,14 @@ paths:
           description: "Created succesfuly"
           schema:
             $ref: "#/definitions/WishList"
-        423:
+        422:
           description: "Unprocessable entity"
           schema:
             $ref: "#/definitions/Error"
+        404:
+          description: "card not found"
+          schema:
+            $ref: "#/definitions/Error" 
   /wishlist/{id}:
     get:
       tags:
@@ -232,7 +236,11 @@ paths:
           schema:
               $ref: "#/definitions/WishList"
         404:
-          description: "WishList not found"
+          description: "WishList not found or card not found"
+          schema:
+            $ref: "#/definitions/Error"
+        422:
+          description: "Unprocessable entity"
           schema:
             $ref: "#/definitions/Error"
     delete:

@@ -13,7 +13,7 @@ class CreateWishListsTable extends Migration
      */
     public function up()
     {
-        Schema::create('wish_lists', function (Blueprint $table) {
+        Schema::create('customized_wish_lists', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->timestamps();
             $table->string('name');
