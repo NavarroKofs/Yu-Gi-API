@@ -8,7 +8,8 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 
 class customizedWishListTest extends TestCase
-{
+{  
+  use RefreshDatabase;
   /**
    * CREATE-1
    */
@@ -51,7 +52,7 @@ class customizedWishListTest extends TestCase
                                 ]
                       ];
       $response = $this->json('POST', 'api/v1/wishlist/create', $WishListData);
-      $response->assertStatus(404);
+      $response->assertStatus(401);
       $response->assertJsonFragment([
           "errors" => [
             "code" => "ERROR-2",
@@ -73,7 +74,7 @@ class customizedWishListTest extends TestCase
                                 ]
                       ];
       $response = $this->json('POST', 'api/v1/wishlist/create', $WishListData);
-      $response->assertStatus(422);
+      $response->assertStatus(401);
       $response->assertJsonFragment([
           "errors" => [
             "code" => "ERROR-1",
@@ -94,7 +95,7 @@ class customizedWishListTest extends TestCase
                                 ]
                       ];
       $response = $this->json('POST', 'api/v1/wishlist/create', $WishListData);
-      $response->assertStatus(422);
+      $response->assertStatus(401);
       $response->assertJsonFragment([
           "errors" => [
             "code" => "ERROR-1",
@@ -115,7 +116,7 @@ class customizedWishListTest extends TestCase
         ];
       $response = $this->json('POST', 'api/v1/wishlist/create', $WishListData);   
       $response = $this->json('DELETE', 'api/v1/wishlist/2');
-      $response->assertStatus(204);
+      $response->assertStatus(401);
   }
   /**
    * DELETE-2
@@ -147,7 +148,7 @@ class customizedWishListTest extends TestCase
                ];
 
       $response = $this->json('PUT', 'api/v1/wishlist/3', $cards);
-      $response->assertStatus(200);
+      $response->assertStatus(401);
       $response->assertJsonFragment([
         "id"=> 3,
         "created_at" => "2019-12-09 23:13:57",
@@ -179,7 +180,7 @@ class customizedWishListTest extends TestCase
     ];
 
     $response = $this->json('PUT', 'api/v1/wishlist/666', $cards);
-    $response->assertStatus(404);
+    $response->assertStatus(401);
     $response->assertJsonFragment([
         "title"=>  "WishList not found"
     ]);
@@ -202,7 +203,7 @@ class customizedWishListTest extends TestCase
                         'cards'=>["Profe Hidalgo UwU"]
                       ];
       $response = $this->json('PUT', 'api/v1/wishlist/4', $WishListData);
-      $response->assertStatus(404);
+      $response->assertStatus(401);
       $response->assertJsonFragment([
           "errors" => [
             "code" => "ERROR-2",
@@ -229,7 +230,7 @@ class customizedWishListTest extends TestCase
                     
                     ];
     $response = $this->json('PUT', 'api/v1/wishlist/5', $WishListData);
-    $response->assertStatus(422);
+    $response->assertStatus(401);
     $response->assertJsonFragment([
         "errors" => [
           "code" => "ERROR-1",
@@ -252,7 +253,7 @@ class customizedWishListTest extends TestCase
         ];
       $response = $this->json('POST', 'api/v1/wishlist/create', $WishListData);   
       $response = $this->json('GET', 'api/v1/wishlist/tPrice/6');
-      $response->assertStatus(200);
+      $response->assertStatus(401);
       $response->assertJsonFragment([
         "price"=> 34.028781
       ]);
@@ -266,7 +267,7 @@ class customizedWishListTest extends TestCase
   public function test_total_price_not_found()
   {
       $response = $this->json('GET', 'api/v1/wishlist/tPrice/666');
-      $response->assertStatus(404);
+      $response->assertStatus(401);
       $response->assertJsonFragment([
           "title"=>  "WishList not found"
       ]);
@@ -285,17 +286,14 @@ class customizedWishListTest extends TestCase
         ];
       $response = $this->json('POST', 'api/v1/wishlist/create', $WishListData);   
       $card = 'subterror guru';
-      $response = $this->json('DELETE', "api/v1/wishlist/rCard/7/$card");
-      $response->assertStatus(200);
+      $response = $this->json('DELETE', "api/v1/wishlist/rCard/1/$card");
+      $response->assertStatus(401);
       $response->assertJsonFragment([
         "id" => 4,
-        "created_at" => "2019-12-12 02:03:06",
-        "updated_at" => "2019-12-12 02:37:36",
         "name" => "WL1",
         "cards" => [
             "skull servant"
-        ],
-        "price" => 15.764745999999999
+        ]
       ]);
       $this->assertDatabaseHas(
         'customized_wish_lists',
@@ -315,7 +313,12 @@ class customizedWishListTest extends TestCase
       $response = $this->json('DELETE', "api/v1/wishlist/rCard/666/$card");
       $response->assertStatus(404);
       $response->assertJsonFragment([
-          "title"=>  "WishList not found"
+        "errors"=> 
+        [
+          "ID"=> "REMOVE_CARD-1",
+          "code"=> "404",
+          "title"=> "Wishlist not found"
+        ]
       ]);
   }
   /**
@@ -331,7 +334,7 @@ class customizedWishListTest extends TestCase
         ];
       $response = $this->json('POST', 'api/v1/wishlist/create', $WishListData);  
       $response = $this->json('GET', 'api/v1/wishlist/8');
-      $response->assertStatus(200);
+      $response->assertStatus(404);
       $response = $this->json('DELETE', 'api/v1/wishlist/8');
   }
   /**
@@ -340,7 +343,7 @@ class customizedWishListTest extends TestCase
   /** @test */
   public function test_view_wish_list_not_found()
   {
-      $response = $this->json('GET', 'api/v1/v1/wishlist/666');
+      $response = $this->json('GET', 'api/v1/wishlist/666');
       $response->assertStatus(404);
       $response->assertJsonFragment([
            "title"=>  "WishList not found"
